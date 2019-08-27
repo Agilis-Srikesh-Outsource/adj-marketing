@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo> 
+	<!-- Stock Picking(Transfer) Form Inherit -->
+   <record id="view_picking_delivery_info_form" model="ir.ui.view">
+            <field name="name">stock.picking_deliveryinfo.form.view</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+              <data>
+              	 <xpath expr="//button[@name='action_assign']" position="replace">
+            	 	<button name="action_assign" context="{'is_check_quant':True}" attrs="{'invisible': [('show_check_availability', '=', False)]}" string="Check Availability" type="object" class="oe_highlight" groups="base.group_user"/>
+                 </xpath>
+               <div name="button_box" position="inside">
+               		<button name="action_purchase_request" string="Purchase Request" type="object"
+                            class="oe_stat_button" icon="fa-arrows-v"
+                            attrs="{'invisible': [('show_request', '=', False)]}"/>
+                </div>
+              	<xpath expr="//field[@name='show_validate']" position="after">
+              		<field name="show_request" invisible="1"/>
+              		<field name="sale_id" invisible="1"/>
+              	</xpath>
+                <xpath expr="//page[@name='extra']" position="after">
+                	<page string="Shipment Info" name="extra">
+                            <group>
+                                <group>
+                                 	<field name="lsd"/>
+                                  	<field name="start_ship_window"/>
+                                   	<field name="po_good_through"/>
+                                    <field name="delivery_date"/>
+                                    <field name="so_release_target"/>
+                                    <field name="sa_release_target"/>
+                                    <field name="qaa_date"/>
+                                    <field name="inspection_date"/>
+                                    <field name="safety_complete"/>
+                                    <field name="book_by_date"/>
+                                    <field name="dupro_date"/>
+                                    <field name="sample_collection"/>
+	                                <field name="sample_selling"/>
+	                                <field name="po_date_receipt"/>
+                                </group>
+                                 <group>
+                                 	<field name="deadline_book"/>
+                                    <field name="actual_booked_date"/>
+                                    <field name="received_date"/>
+                                    <field name="cargo_received_date"/>
+                                    <field name="origin_location"/>
+                                    <field name="shipment_ref"/>
+                                    <field name="carton_w_cm"/>
+					            	<field name="carton_d_cm"/>
+					            	<field name="carton_h_cm"/>
+					            	<field name="cu_ft"/>
+                                </group>
+                            </group>
+                        </page>
+                </xpath>
+                <xpath expr="//field[@name='move_lines']" position="replace">
+                	<field name="move_lines" attrs="{'readonly': ['|', '&amp;', ('show_operations', '=', True), '|', ('is_locked', '=', True), ('state', '=', 'done'), '&amp;', ('state', '=', 'done'), ('is_locked', '=', True)]}" context="{'picking_type_code': picking_type_code, 'default_picking_id': id, 'form_view_ref':'stock.view_move_picking_form', 'address_in_id': partner_id, 'default_picking_type_id': picking_type_id, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id}">
+                    	<tree decoration-danger="(state != 'done' and quantity_done > reserved_availability and show_reserved_availability) or (state != 'done' and show_reserved_availability and is_check_availability)" decoration-muted="scrapped == True or state == 'cancel' or (state == 'done' and is_locked == True)" string="Stock Moves" editable="bottom">
+                        	<field name="name" invisible="1"/>
+                            <field name="date_expected" invisible="1"/>
+                            <field name="state" invisible="1" readonly="0"/>
+                            <field name="picking_type_id" invisible="1"/>
+                            <field name="location_id" invisible="1"/>
+                            <field name="location_dest_id" invisible="1"/>
+                            <field name="scrapped" invisible="1"/>
+                            <field name="picking_code" invisible="1"/>
+                            <field name="product_type" invisible="1"/>
+                            <field name="show_details_visible" invisible="1"/>
+                            <field name="show_reserved_availability" invisible="1"/>
+                            <field name="show_operations" invisible="1" readonly="1"/>
+                            <field name="additional" invisible="1"/>
+                            <field name="has_move_lines" invisible="1"/>
+                            <field name="is_locked" invisible="1"/>
+                            <field name="product_id" required="1" attrs="{'readonly': ['|', '&amp;', ('state', '!=', 'draft'), ('additional', '=', False), ('has_move_lines', '=', True)]}"/>
+                            <field name="is_initial_demand_editable" invisible="1"/>
+                            <field name="is_quantity_done_editable" invisible="1"/>
+                            <field name="product_uom_qty" string="Initial Demand" attrs="{'readonly': [('is_initial_demand_editable', '=', False)]}"/>
+                            <field name="reserved_availability" string="Reserved" attrs="{'column_invisible': ['|', ('parent.state','=', 'done'), ('parent.picking_type_code', '=', 'incoming')]}"/>
+                            <field name="quantity_done" string="Done" attrs="{'readonly': [('is_quantity_done_editable', '=', False)]}"/>
+                            <field name="product_uom" attrs="{'readonly': [('state', '!=', 'draft'), ('additional', '=', False)]}" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="product.group_uom"/>
+                            <button name="action_show_details" string="Register lots, packs, location" type="object" icon="fa-list" attrs="{'invisible': [('show_details_visible', '=', False)]}" options='{"warn": true}'/>
+                            <field name="is_check_availability" invisible="1" />
+                    	</tree>
+                	</field>
+                </xpath>
+              </data>
+            </field>
+        </record>
+        
+        <record id="view_picking_pivot" model="ir.ui.view">
+         <field name="name">stock.picking.pivot</field>
+         <field name="model">stock.picking</field>
+         <field name="arch" type="xml">
+             <pivot string="Inventory Analysis">
+<!--              	 <field name="po_date_receipt" type="col"/> -->
+<!--                  <field name="delivery_date" type="col"/> -->
+<!--                  <field name="scheduled_date" type="col"/> -->
+             </pivot>
+         </field>
+    </record>
+    
+    <record id="stock.action_picking_tree_all" model="ir.actions.act_window">
+            <field name="name">Stock Operations</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot</field>
+            <field name="domain"></field>
+            <field name="context">{
+                    'contact_display': 'partner_address',
+            }
+            </field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click here to create a new transfer.
+              </p><p>
+                You can either do it immediately or mark it as Todo for future processing. Use your scanner to validate the transferred quantity quicker.
+              </p>
+            </field>
+        </record>
+        
+        <record id="stock.stock_picking_action_picking_type" model="ir.actions.act_window">
+            <field name="name">All Transfers</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot</field>
+            <field name="domain"></field>
+            <field name="context">{
+                    'search_default_picking_type_id': [active_id],
+                    'default_picking_type_id': active_id,
+                    'contact_display': 'partner_address',
+            }
+            </field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click here to create a new transfer.
+              </p><p>
+                You can either do it immediately or mark it as Todo for future processing. Use your scanner to validate the transferred quantity quicker.
+              </p>
+            </field>
+        </record>
+       	<record id="view_picking_withcarrier_out_form_inherit" model="ir.ui.view">
+            <field name="name">stock.picking_additionalinfo.form.view</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form"/>
+            <field name="arch" type="xml">
+              <data>
+              	 <xpath expr="//field[@name='weight']" position="replace">
+            	 	<field name="weight" readonly="0" class="oe_inline"/>
+                 </xpath>
+               </data>
+            </field>
+        </record>
+</odoo>
