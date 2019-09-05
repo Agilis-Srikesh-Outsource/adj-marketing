@@ -117,7 +117,7 @@ class ProductTemplate(models.Model):
         cost_price = self.standard_price
         sell_price = self.sell_price
         prec = self.env['decimal.precision'].precision_get('Product Price')
-        if sell_price:
+        if sell_price and cost_price:
             cost = (sell_price-cost_price)
             price = ((cost)/cost_price)
             tot_price = (price*100)
@@ -130,7 +130,7 @@ class ProductTemplate(models.Model):
         cost_price = self.standard_price
         sell_price = self.sell_price2
         prec = self.env['decimal.precision'].precision_get('Product Price')
-        if sell_price:
+        if sell_price and cost_price:
             cost = (sell_price-cost_price)
             price = ((cost)/cost_price)
             tot_price = (price*100)
@@ -143,7 +143,7 @@ class ProductTemplate(models.Model):
         cost_price = self.standard_price
         sell_price = self.sell_price3
         prec = self.env['decimal.precision'].precision_get('Product Price')
-        if sell_price:
+        if sell_price and cost_price:
             cost = (sell_price-cost_price)
             price = ((cost)/cost_price)
             tot_price = (price*100)
@@ -197,7 +197,7 @@ class SkitProductProduct(models.Model):
         cost_price = self.standard_price
         sell_price = self.sell_price
         prec = self.env['decimal.precision'].precision_get('Product Price')
-        if sell_price:
+        if sell_price and cost_price:
             cost = (sell_price-cost_price)
             price = ((cost)/cost_price)
             tot_price = (price*100)
@@ -210,7 +210,7 @@ class SkitProductProduct(models.Model):
         cost_price = self.standard_price
         sell_price = self.sell_price2
         prec = self.env['decimal.precision'].precision_get('Product Price')
-        if sell_price:
+        if sell_price and cost_price:
             cost = (sell_price-cost_price)
             price = ((cost)/cost_price)
             tot_price = (price*100)
@@ -223,7 +223,7 @@ class SkitProductProduct(models.Model):
         cost_price = self.standard_price
         sell_price = self.sell_price3
         prec = self.env['decimal.precision'].precision_get('Product Price')
-        if sell_price:
+        if sell_price and cost_price:
             cost = (sell_price-cost_price)
             price = ((cost)/cost_price)
             tot_price = (price*100)
