@@ -25,7 +25,7 @@
 				<field name="description"/>
 			</xpath>
 		 	<xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" position="replace">
-				<field name="product_id" string="Item/WIC #"/>
+				<field name="product_id" string="Retail Item Number"/>
 			</xpath>
 			<xpath expr="//field[@name='order_line']/tree//field[@name='name']" position="after">
 				<field name="upc_code"/>

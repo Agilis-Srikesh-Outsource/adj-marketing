@@ -19,7 +19,7 @@ class ProductTemplate(models.Model):
     sell_price3 = fields.Float('Sell Price3',
                                digits=dp.get_precision('Product Price'))
     factory_items = fields.Char(string="Factory Items #")
-    adj_items = fields.Char(string="ADJ Items #")
+    adj_items = fields.Char(string="ADJ Item Number")
     retail_items = fields.Char(string="Retail Items #")
     hts = fields.Char(string="HTS #", help="Import Code")
     duty = fields.Float('Duty %')
@@ -157,8 +157,17 @@ class ProductTemplate(models.Model):
         sellprice2 = self.sell_price2
         sellprice3 = self.sell_price3
         costprice = self.standard_price
-        if((sellprice < costprice) or (sellprice2 < costprice) or (sellprice3 < costprice)):
-            raise UserError(_('Cost price should not be lesser than Selling Price %'))
+        values = []
+        values.append({'sellprice': sellprice,
+                       'name': 'Selling price 1'})
+        values.append({'sellprice': sellprice2,
+                       'name': 'Selling price 2'})
+        values.append({'sellprice': sellprice3,
+                       'name': 'Selling price 3'})
+        for vals in values:
+            if vals.get('sellprice') > 0:
+                if((vals.get('sellprice') < costprice)):
+                    raise UserError(_(vals.get('name')+' should not be lesser than Cost Price'))
 
 
 class SkitProductProduct(models.Model):
@@ -237,8 +246,17 @@ class SkitProductProduct(models.Model):
         sellprice2 = self.sell_price2
         sellprice3 = self.sell_price3
         costprice = self.standard_price
-        if((sellprice < costprice) or (sellprice2 < costprice) or (sellprice3 < costprice)):
-            raise UserError(_('Cost price should not be lesser than Selling Price %'))
+        values = []
+        values.append({'sellprice': sellprice,
+                       'name': 'Selling price 1'})
+        values.append({'sellprice': sellprice2,
+                       'name': 'Selling price 2'})
+        values.append({'sellprice': sellprice3,
+                       'name': 'Selling price 3'})
+        for vals in values:
+            if vals.get('sellprice') > 0:
+                if((vals.get('sellprice') < costprice)):
+                    raise UserError(_(vals.get('name')+' should not be lesser than Cost Price'))
 
 
 class ProductClassification(models.Model):
