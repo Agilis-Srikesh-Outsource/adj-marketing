@@ -39,6 +39,21 @@
                      <field name="freight_cuft"/>
                      <field name="sale_duty"/>
                 </xpath>
+                
+                <xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" position="replace">
+                    <field name="product_id"
+                                                context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
+                                                attrs="{'readonly': [('product_updatable', '=', False)]}"
+                                                force_save="1" string="Retail Item Number"
+                                               />
+                </xpath>
+                <xpath expr="//field[@name='order_line']/form//field[@name='product_id']" position="replace">
+                    <field name="product_id"
+                                                context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
+                                                attrs="{'readonly': [('product_updatable', '=', False)]}"
+                                                force_save="1" string="Retail Item Number"
+                                               />
+                </xpath>
             </field>
    </record>
    <record id="skit_view_order_form_inherit_sale_stock" model="ir.ui.view">
