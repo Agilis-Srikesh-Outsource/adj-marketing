@@ -151,19 +151,6 @@ class ProductTemplate(models.Model):
             if float(tot_amount) < self.gross_margin:
                 raise UserError(_('Sell price should not be lesser than Gross Margin %'))
 
-    @api.onchange('list_price')
-    def onchange_list_price(self):
-        cost_price = self.standard_price
-        list_price = self.list_price
-        prec = self.env['decimal.precision'].precision_get('Product Price')
-        if list_price and cost_price:
-            cost = (list_price-cost_price)
-            price = ((cost)/cost_price)
-            tot_price = (price*100)
-            tot_amount = float_repr(float_round(tot_price, precision_digits=prec),precision_digits=prec)
-            if float(tot_amount) < self.gross_margin:
-                raise UserError(_('Sell price should not be lesser than Gross Margin %'))
-
     @api.onchange('standard_price')
     def onchage_cost_price(self):
         sellprice = self.sell_price
