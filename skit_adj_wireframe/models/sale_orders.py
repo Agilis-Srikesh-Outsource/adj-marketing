@@ -19,7 +19,7 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     nick_name = fields.Char(string="Nick Name")
-    customer_items = fields.Char(string="Customer Items #")
+    customer_items = fields.Char(string="Customer Item #")
     contract_no = fields.Char(string="Contract No.")
     ship_from = fields.Many2one('stock.warehouse', string="Ship From")
     ship_not_later = fields.Datetime(string="Ship Not Later")
@@ -31,7 +31,7 @@ class SaleOrder(models.Model):
     location_id = fields.Many2one('stock.location', string="Location")
     order_contract = fields.Char(string="Order Contract")
     consolidator = fields.Char(string="Consolidator")
-    internal_item_no = fields.Char(string="Internal Items No.")
+    internal_item_no = fields.Char(string="Internal Item No.")
     line_description = fields.Char(string="Line Description")
     fob_description = fields.Char(string="FOB/Description")
     promo_deal_no = fields.Char(string="Promotional/Deal No.")
@@ -96,15 +96,11 @@ class SkitSaleOrderLine(models.Model):
         products = self.env['product.product'].search([('id', '=', product)])
         margin = products.gross_margin
         prec = self.env['decimal.precision'].precision_get('Product Price')
-        if price_unit:
-            if products.standard_price:
-                cost = (price_unit-products.standard_price)
-                price = ((cost)/products.standard_price)
-                tot_price = (price*100)
-                tot_amount = float_repr(float_round(tot_price, precision_digits=prec), precision_digits=prec)
-                if float(tot_amount) < margin:
-                    return False
-                else:
-                    return True
-            else:
-                return True
+        cost = (price_unit-products.standard_price)
+        price = ((cost)/products.standard_price)
+        tot_price = (price*100)
+        tot_amount = float_repr(float_round(tot_price, precision_digits=prec), precision_digits=prec)
+        if float(tot_amount) < margin:
+            return False
+        else:
+            return True

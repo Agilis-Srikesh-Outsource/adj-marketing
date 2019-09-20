@@ -18,9 +18,9 @@ class ProductTemplate(models.Model):
                                digits=dp.get_precision('Product Price'))
     sell_price3 = fields.Float('Sell Price3',
                                digits=dp.get_precision('Product Price'))
-    factory_items = fields.Char(string="Factory Items #")
-    adj_items = fields.Char(string="ADJ Item Number")
-    retail_items = fields.Char(string="Retail Items #")
+    factory_items = fields.Char(string="Factory Item #")
+    adj_items = fields.Char(string="ADJ Retail Number")
+    retail_items = fields.Char(string="Retail Number #")
     hts = fields.Char(string="HTS #", help="Import Code")
     duty = fields.Float('Duty %')
     import_val = fields.Selection([
@@ -82,7 +82,7 @@ class ProductTemplate(models.Model):
     sale_order_line_ids = fields.One2many('sale.order.line',
                                           'product_templ_id', 'Sales Order')
     paint_finish = fields.Char("Paint/Finish")
-    item_no = fields.Integer('Items No.')
+    item_no = fields.Integer('Item No.')
     item_description = fields.Char('Item Description')
     product_classification = fields.Many2one('product.classification',
                                              "Product Classification")
@@ -145,6 +145,19 @@ class ProductTemplate(models.Model):
         prec = self.env['decimal.precision'].precision_get('Product Price')
         if sell_price and cost_price:
             cost = (sell_price-cost_price)
+            price = ((cost)/cost_price)
+            tot_price = (price*100)
+            tot_amount = float_repr(float_round(tot_price, precision_digits=prec),precision_digits=prec)
+            if float(tot_amount) < self.gross_margin:
+                raise UserError(_('Sell price should not be lesser than Gross Margin %'))
+
+    @api.onchange('list_price')
+    def onchange_list_price(self):
+        cost_price = self.standard_price
+        list_price = self.list_price
+        prec = self.env['decimal.precision'].precision_get('Product Price')
+        if list_price and cost_price:
+            cost = (list_price-cost_price)
             price = ((cost)/cost_price)
             tot_price = (price*100)
             tot_amount = float_repr(float_round(tot_price, precision_digits=prec),precision_digits=prec)
