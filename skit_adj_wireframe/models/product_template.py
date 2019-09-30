@@ -18,9 +18,9 @@ class ProductTemplate(models.Model):
                                digits=dp.get_precision('Product Price'))
     sell_price3 = fields.Float('Sell Price3',
                                digits=dp.get_precision('Product Price'))
-    factory_items = fields.Char(string="Factory Items #")
-    adj_items = fields.Char(string="ADJ Item Number")
-    retail_items = fields.Char(string="Retail Items #")
+    factory_items = fields.Char(string="Factory Item #")
+    adj_items = fields.Char(string="ADJ Retail Number")
+    retail_items = fields.Char(string="Retail Number #")
     hts = fields.Char(string="HTS #", help="Import Code")
     duty = fields.Float('Duty %')
     import_val = fields.Selection([
@@ -82,10 +82,16 @@ class ProductTemplate(models.Model):
     sale_order_line_ids = fields.One2many('sale.order.line',
                                           'product_templ_id', 'Sales Order')
     paint_finish = fields.Char("Paint/Finish")
-    item_no = fields.Integer('Items No.')
+    item_no = fields.Integer('Item No.')
     item_description = fields.Char('Item Description')
     product_classification = fields.Many2one('product.classification',
                                              "Product Classification")
+    list_price = fields.Float(
+        'Sales Price', default=1.0,
+        digits=dp.get_precision('Product Price'),
+        compute='_compute_list_price',
+        readonly=False, store=True,
+        help="Compute price based on Cost and Gross Margin values")
 
     @api.onchange('carton_w_cm', 'carton_d_cm', 'carton_h_cm')
     def _onchange_cu_ft(self):
@@ -168,6 +174,16 @@ class ProductTemplate(models.Model):
             if vals.get('sellprice') > 0:
                 if((vals.get('sellprice') < costprice)):
                     raise UserError(_(vals.get('name')+' should not be lesser than Cost Price'))
+
+    @api.depends('standard_price', 'gross_margin',)
+    def _compute_list_price(self):
+        """
+        Compute Product's Sales Price based upon Cost and Gross Margin values.
+        """
+        for product in self:
+            gross_margin_percent = ((product.gross_margin * product.standard_price) / 100)
+            list_price = product.standard_price + gross_margin_percent
+            product.list_price = list_price
 
 
 class SkitProductProduct(models.Model):
@@ -257,6 +273,16 @@ class SkitProductProduct(models.Model):
             if vals.get('sellprice') > 0:
                 if((vals.get('sellprice') < costprice)):
                     raise UserError(_(vals.get('name')+' should not be lesser than Cost Price'))
+
+    @api.onchange('standard_price', 'gross_margin')
+    def compute_lst_price(self):
+        """
+        Compute Product's Sales Price based upon Cost and Gross Margin values.
+        """
+        for product in self:
+            gross_margin_percent = ((product.gross_margin * product.standard_price) / 100)
+            list_price = product.standard_price + gross_margin_percent
+            product.lst_price = list_price
 
 
 class ProductClassification(models.Model):
