@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="report_sales_delivery_document">
+			<t t-call="web.html_container">
+				<t t-call="web.html_container">
+					<t t-call="web.internal_layout">
+						<div class="page">
+							<h1 class="text-center">Sales Delivery</h1>
+							
+							<table class="table table-condensed">
+								<thead>
+									<tr>
+										<td class="text-left">
+											<h4>
+												Start date:
+												<span>
+													<t t-esc='start_date' />
+												</span>
+											</h4>
+										</td>
+										<td class="text-right">
+											<h4>
+												End date:
+												<span>
+													<t t-esc='end_date' />
+												</span>
+											</h4>
+										</td>
+									</tr>
+								</thead>
+							</table>
+							<table class="table table-condensed">
+								<thead>
+									<tr class="highlight overlap">
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Name</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Product</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Delivery Date</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Port</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Vendor</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">ADJ PO</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Customer PO</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">WBA PO</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Item No.</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Item Description</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Qty Open</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Deadline Booked</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Actual Booked Date</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Deliver by/CRD</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">SA Deadline</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Actual ETD</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Cargo Received Date</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Inspection Date</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Invoice Date</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Sail Window Start</th>
+										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Sail Window End</th>
+									</tr>
+								</thead>
+								<tbody class="orders">
+
+									<t t-foreach="docs" t-as="order">
+										<tr>
+											<td>
+												<span>
+													<t t-esc="order['name']" />
+												</span>
+											</td>
+											<td> 
+												<span>
+													<t t-esc="order['product_name']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['delivery_date']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['port']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['vendor']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['adj_po']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['customerpo']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['wbapo']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['item_no']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['item_description']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['qtyopen']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['deadline_book']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['actual_booked_date']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['crd']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['received_date']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['actual_etd']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['cargo_received_date']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['actual_inspection_date']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['date_invoice']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['sail_window_start']" />
+												</span>
+											</td>
+											<td>
+												<span>
+													<t t-esc="order['sail_window_end']" />
+												</span>
+											</td>
+										
+										</tr>
+									</t>
+								</tbody>
+							</table>
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</odoo>
+						
+						

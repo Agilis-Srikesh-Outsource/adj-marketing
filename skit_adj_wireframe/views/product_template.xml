@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo> 
+	<record id="skit_view_product_temp_form_inherit" model="ir.ui.view">
+		 <field name="name">skit.product.template.form</field>
+		 <field name="model">product.template</field>
+		 <field name="inherit_id" ref="product.product_template_only_form_view"/>
+		 <field name="arch" type="xml">
+		 	<xpath expr="//field[@name='barcode']" position="after">
+		 		<field name="cu_ft"/>
+		 		<br></br>
+            	<field name="factory_items"/>
+            	<field name="adj_items"/>
+            	<!-- <field name="retail_items"/> -->
+            	<field name="product_brand"/>
+            	<field name="hts"/>
+            	<field name="duty"/>
+            	<field name="gross_margin"/>
+            	<field name="import_val"/>
+            	<field name="status"/>
+            	<field name="qty_inner"/>
+            	<field name="qty_master"/>
+            	<field name="pdq"/>
+            	<br></br>
+            	<field name="item_weight"/>
+            	<field name="carton_weight"/>
+            	<br></br>
+            	<field name="upc_1"/>
+            	<field name="upc_2"/>
+            	<field name="upc_3"/>
+            	<field name="upc_4"/>
+            	<field name="item_no"/>
+            	<field name="item_description"/>
+            </xpath>
+           
+		 </field>
+	</record>
+	<record id="skit_view_product_temp_form_inherit1" model="ir.ui.view">
+		 <field name="name">skit.product.temp.form</field>
+		 <field name="model">product.template</field>
+		 <field name="inherit_id" ref="product.product_template_form_view"/>
+		 <field name="arch" type="xml">
+		 	<xpath expr="//notebook" position="before">
+			 	<group>
+				 	<group>
+					 	<field name="create_date" readonly="1" string="Date Created"/>
+					 	<field name="description"/>
+				 	</group>
+				 	<group>
+			 		 	<field name="write_date" readonly="1" string="Date Modified"/>
+				 	</group>
+			 	</group>
+		 	</xpath>
+		 	<xpath expr="//div[@name='standard_price_uom']" position="after">
+            	<field name="buy_price"/>
+            	<field name="currency_id" readonly="0"/>
+            	<field name="sell_price" widget='monetary' options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+            	<field name="sell_price2" widget='monetary' options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+            	<field name="sell_price3" widget='monetary' options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+            	<field name="landed_cost"/>
+            	<field name="min_order_qty"/>
+            	<field name="lead_time"/>
+            	<field name="port"/>
+            	<field name="item_w_cm"/>
+            	<field name="item_d_cm"/>
+            	<field name="item_h_cm"/>
+            	<field name="carton_w_cm"/>
+            	<field name="carton_d_cm"/>
+            	<field name="carton_h_cm"/>
+            	<field name="carton_w_in"/>
+            	<field name="carton_d_in"/>
+            	<field name="carton_h_in"/>
+            	<field name="cbm"/>
+            	<br></br>
+            	<field name="color_1"/>
+            	<field name="color_2"/>
+            	<field name="color_3"/>
+            	<field name="color_4"/>
+            	<br></br>
+            	<field name="commission"/>
+            	<field name="paint_finish"/>
+            	<field name="gtin"/>
+            	<field name="material"/>
+            	<field name="package_id" domain="[('product_id','=', product_variant_id)]"/>
+            	<field name="product_classification"/>
+            </xpath>
+            <xpath expr="//page[@name='inventory']" position="after">
+            	<page string="Quotation" name="sale_quotation">
+            		<group>
+            			<field name="sale_order_line_ids" context="{'default_product_tmpl_id': context.get('product_tmpl_id', active_id)}" readonly="1" nolabel="1">
+	            			<tree>
+	            				<field name="product_id"/>
+	            				<field name="order_id"/>
+	            				<field name="price_unit"/>
+	            			</tree>
+            			</field>
+            		</group>
+            	</page>
+            	<page string="Quality Tracking" name="quality_track">
+            		<group>
+            			<group>
+            				<field name="safty_test"/>
+            				<field name="gmi"/>
+            				<field name="sample_sealing"/>
+            				<field name="sample_sealing_approval"/>	
+            			</group>
+            			<group>
+            				<field name="drop_test"/>
+            				<field name="sample_collection_test"/>
+            				<field name="pac_test_expiry"/>
+            				<field name="pac_certificate"/>
+            				<field name="safety_test_report"/>
+            				<field name="qaa_expiry"/>	
+            			</group>
+            		</group>
+            	</page>
+            </xpath>
+            <xpath expr="//notebook" position="after">
+				<field name="remark" placeholder="Notes/Remarks..."/>
+			</xpath>
+		 </field>
+	</record>
+	<record id="skit_view_product_prod_form_inherit" model="ir.ui.view">
+		 <field name="name">skit.product.product.form</field>
+		 <field name="model">product.product</field>
+		 <field name="inherit_id" ref="product.product_normal_form_view"/>
+		 <field name="arch" type="xml">
+		 	<xpath expr="//field[@name='categ_id']" position="after">
+		 		<field name="cu_ft"/>
+		 		<br></br>
+            	<field name="factory_items"/>
+            	<field name="adj_items"/>
+            	<!-- <field name="retail_items"/> -->
+            	<field name="product_brand"/>
+            	<field name="hts"/>
+            	<field name="duty"/>
+            	<field name="gross_margin"/>
+            	<field name="import_val"/>
+            	<field name="status"/>
+            	<field name="qty_inner"/>
+            	<field name="qty_master"/>
+            	<field name="pdq"/>
+            	<br></br>
+            	<field name="item_weight"/>
+            	<field name="carton_weight"/>
+            	<br></br>
+            	<field name="upc_1"/>
+            	<field name="upc_2"/>
+            	<field name="upc_3"/>
+            	<field name="upc_4"/>
+            </xpath>
+           
+		 </field>
+	</record>
+	
+	<record id="skit_view_stock_product_tree" model="ir.ui.view">
+            <field name="name">product.stock.tree.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="stock.view_stock_product_template_tree"/>
+            <field name="arch" type="xml">
+                <field name="virtual_available" position="after">
+                    <field name="product_classification"/>
+                </field>
+            </field>
+        </record>
+        
+        <record id="skit_product_packaging_tree_view_inherited" model="ir.ui.view">
+		 <field name="name">product.packaging.tree.view</field>
+		 <field name="model">product.packaging</field>
+		 <field name="inherit_id" ref="product.product_packaging_tree_view"/>
+		 <field name="arch" type="xml">
+		 	<xpath expr="//field[@name='product_id']" position="replace">
+		 		<field name="product_id"  string="Retail Item Number"/>
+            </xpath>
+		 </field>
+	</record>
+	
+	<record id="skit_product_packaging_form_view_inherited" model="ir.ui.view">
+		 <field name="name">product.packaging.form.view</field>
+		 <field name="model">product.packaging</field>
+		 <field name="inherit_id" ref="product.product_packaging_form_view"/>
+		 <field name="arch" type="xml">
+		 	<xpath expr="//field[@name='product_id']" position="replace">
+		 		<field name="product_id"  required='True' attrs="{'readonly': [('id', '!=', False)]}" string="Retail Item Number"/>
+            </xpath>
+		 </field>
+	</record>
+</odoo>

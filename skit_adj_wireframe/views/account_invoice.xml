@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="skit_view_acc_inv_form_inherit" model="ir.ui.view">
+		<field name="name">skit.acc.inv.form</field>
+		<field name="model">account.invoice</field>
+		<field name="inherit_id" ref="account.invoice_form"/>
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='partner_id']" position="after">
+				<field name="nick_name"/>
+			</xpath>
+			<xpath expr="//page[@name='other_info']/group//field[@name='account_id']" position="after">
+				<field name="retail_item"/>
+				<field name="so_number"/>
+		   		<field name="page" />
+		   		<field name="ship_to" />
+		   		<field name="master_carton_total" />
+		   		<field name="total_cbm" />
+		   		<field name="fcr_no" />
+		   		<field name="etd" />
+		   		<field name="fcr_confirmed" />
+		   		<field name="original_fcr_receive" />
+			</xpath>
+			<xpath expr="//page[@name='other_info']/group//field[@name='name']" position="after">
+		   		<field name="shipping_method" />
+		   		<field name="ship_date" />
+		   		<field name="freight" />
+		   		<field name="credit_memo_no" />
+		   		<field name="shipping_port"/>
+		   		<field name="deffective_allowance"/>
+		   		<field name="booking_inv"/>
+		   		<field name="adj_invoice"/>
+		   		<field name="total_net_weight"/>
+		   		<field name="sail_window"/>
+		   		<field name="local_charge"/>
+			</xpath>
+			<xpath expr="//notebook" position="after">
+				<field name="remark" placeholder="Notes/Remarks..."/>
+			</xpath>
+			<xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='price_unit']" position="after">
+				<field name="sell_price"/>
+			</xpath>
+		</field>
+	</record>
+	
+	<record id="skit_view_vendor_form_inherit" model="ir.ui.view">
+		<field name="name">skit.vendor.bill.form</field>
+		<field name="model">account.invoice</field>
+		<field name="inherit_id" ref="account.invoice_supplier_form"/>
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='purchase_id']" position="after">
+				<field name="create_date" readonly="1"  string="Date Created"/>
+				<field name="write_date" readonly="1" string="Date Modified"/>
+			</xpath>
+			<xpath expr="//page[@name='other_info']" position="before">
+				<page string="PO Payment" name="po_payment">
+					<group>
+						<group>
+							<field name="nick_name" />
+							<field name="currency_id" />
+							<field name="delivery_date" />
+							<field name="order_total"/>
+							<field name="adj_po"/>
+							<field name="custom"/>
+							<field name="package_cost"/>
+						</group>
+						<group>
+							<field name="deposit" />
+							<field name="deposit_date" />
+							<field name="final_payment" />
+							<field name="final_payment_date" />
+							<field name="invoice" />
+							<field name="complete" />
+						</group>
+					</group>
+				</page>
+			</xpath>
+			<xpath expr="//notebook" position="after">
+				<field name="remark" placeholder="Notes/Remarks..."/>
+			</xpath>
+		</field>
+	</record>
+
+	<record id="view_account_invoice_report_pivot_inherited" model="ir.ui.view">
+		<field name="name">account.invoice.report.pivot.inherited</field>
+		<field name="model">account.invoice.report</field>
+		<field name="inherit_id" ref="account.view_account_invoice_report_pivot" />
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='price_total']" position="after">
+				<field name="cost_price" type="measure" />
+				<field name="gross_profit_amt" type="measure" />
+				<field name="gross_profit_precent" type="measure" />
+         	</xpath>
+         </field>
+    </record>
+	
+</odoo>

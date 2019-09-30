@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="view_delivery_warning_wizard" model="ir.ui.view">
+		<field name="name">delivery.warning.wizard.form</field>
+		<field name="model">delivery.warning.wizard</field>
+		<field name="arch" type="xml">
+			<form>
+				<group>
+                    <span>Stock not available in warehouse.</span>
+                </group>
+				<footer>
+					<button string="OK" class="btn-default" special="cancel" />
+				</footer>
+			</form>
+		</field>
+	</record>
+</odoo>

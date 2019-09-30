@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo> 
+	<record id="skit_view_purchase_order_form_inherit" model="ir.ui.view">
+		 <field name="name">skit.purchase.order.form</field>
+		 <field name="model">purchase.order</field>
+		 <field name="inherit_id" ref="purchase.purchase_order_form"/>
+		 <field name="arch" type="xml">
+		 	<xpath expr="//field[@name='partner_id']" position="after">
+				 <label for="street" string="Address"/>
+                 <div class="o_address_format">
+                     <field name="street" placeholder="Street..." class="o_address_street"/>
+                     <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                     <field name="city" placeholder="City" class="o_address_city" />
+                     <field name="state_id" class="o_address_state" placeholder="State" options='{"no_open": True}'
+                     		context="{'country_id': country_id, 'zip': zip}"/>
+                     <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                     <field name="country_id" placeholder="Country" class="o_address_country" options='{"no_open": True, "no_create": True}'/>
+                 </div>
+			</xpath>
+			<xpath expr="//field[@name='date_order']" position="after">
+				<field name="create_date" readonly="1"  string="Date Created"/>
+				<field name="write_date" readonly="1" string="Date Modified"/>
+				<field name="contact_name"/>
+				<field name="contact_email"/>
+				<field name="description"/>
+			</xpath>
+		 	<xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" position="replace">
+				<field name="product_id" string="Retail Item Number"/>
+			</xpath>
+			<xpath expr="//field[@name='order_line']/tree//field[@name='name']" position="after">
+				<field name="upc_code"/>
+				<field name="cbm_per_case" />
+				<field name="case_pack" />
+			</xpath>
+			<xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']" position="before">
+				<field name="price_total" widget="monetary" string="CBM Total"/>
+			</xpath>
+			<xpath expr="//notebook[last()]" position="inside">
+				<page string="Other information">
+					<group>
+						<group>
+							<field name="po_good_through"/>
+							<field name="sample_sealing"/>
+							<field name="sample_sealing_approval"/>
+							<field name="dupro_date"/>
+							<field name="pac_test_expiry"/>
+							<br></br>
+							<field name="qaa_expiry"/>
+							<field name="so_number"/>
+							<field name="sale_order_state"/>
+							<field name="sale_order_date"/>
+							<br></br>
+							<field name="start_ship_window"/>
+							<field name="lsd"/>
+							<field name="ttl_carton"/>
+							<field name="fcr_confirm"/>
+							<field name="sail_window_end"/>
+						</group>
+						<group>
+							<field name="book_by"/>
+							<field name="inspection_by"/>
+							<field name="actual_inspection_date"/>
+							<field name="sa_release"/>
+							<field name="so_release"/>
+							<br></br>
+							<field name="el_received"/>
+							<field name="distribution_center"/>
+							<field name="acutal_booking"/>
+							<field name="booking_number"/>
+							<br></br>
+							<field name="begin_deliver_window"/>
+							<field name="freight_avail"/>
+							<field name="crd"/>
+							<field name="sail_window_start"/>
+							<field name="master_carton_total"/>
+							<field name="total_cbm"/>
+						</group>
+					</group>
+				</page>
+			</xpath>
+			<xpath expr="//notebook" position="after">
+				<field name="remark" placeholder="Notes/Remarks..."/>
+			</xpath>
+		 </field>
+	</record>
+</odoo>

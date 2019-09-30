@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+	<template id="skit_assets_backend" name="skit_multi_selection" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                 <script type="text/javascript" src="/skit_adj_wireframe/static/src/js/multi_form_view.js"></script>
+            </xpath>
+        </template> 
+	<!-- Sale Order Form Inherit -->
+   <record id="skit_view_order_form_inherit" model="ir.ui.view">
+            <field name="name">skit.sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//field[@name='partner_id']" position="after">
+            		<field name="nick_name"/>
+	                <field name="customer_items"/>
+	                <field name="create_date" readonly="1" string="Date Created"/>
+                </xpath>
+            	<xpath expr="//field[@name='payment_term_id']" position="after">
+	               	<field name="write_date" readonly="1" string="Date Modified"/>
+	               	<field name="contract_no"/>
+	               	<field name="description"/>
+                </xpath>
+                <xpath expr="//field[@name='fiscal_position_id']" position="after">
+                     <field name="order_contract"/>
+                </xpath>
+                 <xpath expr="//field[@name='client_order_ref']" position="after">
+	                 <field name="consolidator"/>
+	                 <field name="internal_item_no"/>
+	                 <field name="line_description"/>
+	                 <field name="fob_description"/>
+                     <field name="promo_deal_no"/>
+                     <field name="request_delivery_date"/>
+                     <field name="weight"/>
+                     <field name="height"/>
+                     <field name="allowance_percent"/>
+                     <field name="allowance_description"/>
+                     <field name="freight_cuft"/>
+                     <field name="sale_duty"/>
+                </xpath>
+                
+                <xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" position="replace">
+                    <field name="product_id"
+                                                context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
+                                                attrs="{'readonly': [('product_updatable', '=', False)]}"
+                                                force_save="1" string="Retail Item Number"
+                                               />
+                </xpath>
+                <xpath expr="//field[@name='order_line']/form//field[@name='product_id']" position="replace">
+                    <field name="product_id"
+                                                context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
+                                                attrs="{'readonly': [('product_updatable', '=', False)]}"
+                                                force_save="1" string="Retail Item Number"
+                                               />
+                </xpath>
+            </field>
+   </record>
+   <record id="skit_view_order_form_inherit_sale_stock" model="ir.ui.view">
+            <field name="name">skit.sale.stock.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
+            <field name="arch" type="xml">
+            	 <xpath expr="//field[@name='picking_policy']" position="after">
+	            	<field name="ship_from"/>
+	            	<field name="ship_not_later"/>
+	            	<field name="ship_not_before"/>
+	            	<field name="warehouse_contact"/>
+                 	<field name="distribution_center"/>
+                 	<field name="location_id"/>
+                </xpath>
+                <xpath expr="//notebook" position="after">
+					<field name="remark" placeholder="Notes/Remarks..."/>
+				</xpath>
+            </field>
+   </record>
+   
+   <record id="skit_error" model="ir.ui.view">
+		<field name="name">skit.error.wizard</field>
+		<field name="model">skit.error</field>
+		<field name="arch" type="xml">
+			<form string="Warning" name="Warning">
+				<group >
+				<p>Selling price should not be lesser than Gross Margin %..</p>
+				</group>
+				<footer>
+					<button string="Ok" class="btn-primary" name="skit_warn" type="object" />
+				</footer>
+			</form>
+		</field>
+	</record>
+	
+		<!-- Orders to Upsell Menu Hide  -->
+	<record model="ir.ui.menu" id="sale.menu_sale_order_upselling">
+    	<field name="action" eval="False"/>
+	</record>
+	
+		<!--Quotation Menu Hide  -->
+	<record model="ir.ui.menu" id="sale.menu_sale_quotations">
+    	<field name="action" eval="False"/>
+	</record>
+	
+   </data>
+</odoo>

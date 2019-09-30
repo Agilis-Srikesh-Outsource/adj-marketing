@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo> 
+	<!-- Partner Form Inherit -->
+   <record id="skit_view_partner_form_inherit" model="ir.ui.view">
+		   <field name="name">skit.res.partner.form</field>
+		   <field name="model">res.partner</field>
+		   <field name="inherit_id" ref="base.view_partner_form"/>
+		   <field name="arch" type="xml">
+			   <xpath expr="//field[@name='type']" position="after">
+			   		<field name="partner_code" attrs="{'invisible': [('customer','!=',True)]}"/>
+			   		<field name="partner_code" string="Vendor No" attrs="{'invisible': [('supplier','!=',True)]}"/>
+			   		<field name="vendor_nickname" attrs="{'invisible': [('supplier','!=',True)]}"/>
+			   </xpath>
+		   	   <xpath expr="//field[@name='category_id']" position="replace">
+		             <field name="category_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" string="Category" placeholder="Category..."  attrs="{'invisible': [('customer','!=',True)]}"/>
+		             <field name="category_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Tags..."  attrs="{'invisible': [('supplier','!=',True)]}"/>
+		             <field name="create_date" readonly="1"  string="Date Created"/>
+		             <field name="tax_id" attrs="{'invisible': [('customer','!=',True)]}"/>
+		             <field name="resale" attrs="{'invisible': [('customer','!=',True)]}"/>
+		             <field name="terms" attrs="{'invisible': [('customer','!=',True)]}"/>
+		             <field name="customer_since" attrs="{'invisible': [('customer','!=',True)]}"/>
+		       </xpath>
+		       <xpath expr="//field[@name='function']" position="before">
+			   		 <field name="write_date" readonly="1" string="Date Modified"/>
+			         <field name="line_business" attrs="{'invisible': [('customer','!=',True)]}"/>
+		       </xpath>
+		       <xpath expr="//field[@name='website']" position="after">
+		       		 <field name="fax" attrs="{'invisible': [('customer','!=',True)]}"/>
+		             <field name="live" attrs="{'invisible': [('supplier','!=',True)]}"/>
+		       </xpath>
+		        <xpath expr="//group[@name='purchase']/field[@name='supplier']" position="after">
+		             <field name="product_category_id" attrs="{'invisible': [('supplier','!=',True)]}"/>
+		       </xpath>
+		       <xpath expr="//field[@name='child_ids']/form//group/group[2]//field[@name='name']" position="replace">
+		             <field name="name" string="Vendor Contact Name" attrs="{'required' : [('type', '=', 'contact')],'invisible': [('supplier','!=',True)]}"/>
+		              <field name="name" string="Name" attrs="{'required' : [('type', '=', 'contact')],'invisible': [('customer','!=',True)]}"/>
+		       </xpath>
+		        <xpath expr="//field[@name='child_ids']/form//group/group[2]//field[@name='email']" position="replace">
+		             <field name="email" string="Vendor Contact Email" attrs="{'invisible': [('supplier','!=',True)]}"/>
+		             <field name="email" string="Email" attrs="{'invisible': [('customer','!=',True)]}"/>
+		       </xpath>
+		       <xpath expr="//field[@name='child_ids']/form//group/group[2]//field[@name='phone']" position="replace">
+		             <field name="phone" widget="phone" string="Vendor Contact Tel" attrs="{'invisible': [('supplier','!=',True)]}"/>
+		             <field name="phone" widget="phone" string="Phone" attrs="{'invisible': [('customer','!=',True)]}"/>
+		       </xpath>
+		       <xpath expr="//notebook" position="after">
+					<field name="remark" placeholder="Notes/Remarks..."/>
+				</xpath>
+		   </field>
+   </record>
+    <record id="skit_view_partner_property_form" model="ir.ui.view">
+		   <field name="name">skit.res.partner.property.form</field>
+		   <field name="model">res.partner</field>
+		   <field name="inherit_id" ref="account.view_partner_property_form"/>
+		   <field name="arch" type="xml">
+		        <xpath expr="//group[@name='fiscal_information']/field[@name='property_account_position_id']" position="after">
+		             <field name="audit" attrs="{'invisible': [('supplier','!=',True)]}"/>
+		       </xpath>
+		       <xpath expr="//group[@name='accounting_entries']/field[@name='property_account_payable_id']" position="after">
+		             <field name="audit_valid_to" attrs="{'invisible': [('supplier','!=',True)]}"/>
+		       </xpath>
+		   </field>
+   </record>
+   
+   <record id="skit_view_supplier_form_inherit" model="ir.ui.view">
+		   <field name="name">skit.product.supplierinfo.form</field>
+		   <field name="model">product.supplierinfo</field>
+		   <field name="inherit_id" ref="product.product_supplierinfo_form_view"/>
+		   <field name="arch" type="xml">
+		   		<xpath expr="//field[@name='name']" position="before">
+			   		<field name="product_id"/>
+			   	</xpath>
+			   	<xpath expr="//field[@name='product_name']" position="before">
+			   		<field name="nick_name"/>
+			   	</xpath>
+			   	<xpath expr="//field[@name='product_name']" position="after">
+			   		<field name="vendor_item"/>
+			   	</xpath>
+		   </field>
+  </record>
+</odoo>

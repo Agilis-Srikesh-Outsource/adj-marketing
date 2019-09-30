@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record model="report.paperformat" id="report_sale_delivery">
+			<field name="name">Sales Delivery</field>
+			<field name="model">sale.delivery.wizard</field>
+			<field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">297</field>
+            <field name="page_width">210</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">30</field>
+            <field name="margin_bottom">23</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">20</field>
+            <field name="dpi">130</field>
+			<field name="report_name">skit_adj_wireframe.report_sales_delivery_document</field>
+		</record>
+
+		<report 
+			model="sale.delivery.wizard" 
+			id="action_report_sale_delivery" 
+			name="skit_adj_wireframe.report_sales_delivery_document" 
+			file="skit_adj_wireframe.report_sales_delivery_document" 
+			report_type="qweb-pdf" paperformat="skit_adj_wireframe.report_sale_delivery" menu="False" string="Sales Delivery"/>
+	</data>
+</odoo>
