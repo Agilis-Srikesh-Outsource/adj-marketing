@@ -39,8 +39,6 @@
 			 	</group>
 		 	</xpath>
 		 	<xpath expr="//div[@name='standard_price_uom']" position="after">
-            	<!-- #<field name="buy_price"/> -->
-            	<field name="currency_id" readonly="0"/>
             	<field name="sell_price" widget='monetary' options="{'currency_field': 'currency_id', 'field_digits': True}"/>
             	<field name="sell_price2" widget='monetary' options="{'currency_field': 'currency_id', 'field_digits': True}"/>
             	<field name="sell_price3" widget='monetary' options="{'currency_field': 'currency_id', 'field_digits': True}"/>
