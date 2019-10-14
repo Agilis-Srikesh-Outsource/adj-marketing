@@ -10,8 +10,8 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     cu_ft = fields.Float(string="CU FT", help="Master Carton CU FT")
-    buy_price = fields.Float('Buy Price',
-                             digits=dp.get_precision('Product Price'))
+   # buy_price = fields.Float('Buy Price',
+   #                          digits=dp.get_precision('Product Price'))
     sell_price = fields.Float('Sell Price1',
                               digits=dp.get_precision('Product Price'))
     sell_price2 = fields.Float('Sell Price2',
@@ -38,10 +38,6 @@ class ProductTemplate(models.Model):
                             ('no', _('No'))], string='PDQ')
     item_weight = fields.Float("Item Weight KG")
     carton_weight = fields.Float("Carton Weight KG")
-    upc_1 = fields.Char("UPC 1")
-    upc_2 = fields.Char("UPC 2")
-    upc_3 = fields.Char("UPC 3")
-    upc_4 = fields.Char("UPC 4")
     item_w_cm = fields.Float("Item W (cm)")
     item_d_cm = fields.Float("Item D (cm)")
     item_h_cm = fields.Float("Item H (cm)")
@@ -52,13 +48,7 @@ class ProductTemplate(models.Model):
     carton_d_in = fields.Float("Carton D (in)")
     carton_h_in = fields.Float("Carton H (in)")
     cbm = fields.Float("CBM", help="Master Carton Cube")
-    color_1 = fields.Char("Color 1")
-    color_2 = fields.Char("Color 2")
-    color_3 = fields.Char("Color 3")
-    color_4 = fields.Char("Color 4")
     gtin = fields.Char("GTIN")
-    material = fields.Char("Materials")
-    package_id = fields.Many2one('product.packaging', "Packaging")
     remark = fields.Text(string='Remarks', help="Notes/Remark")
     product_brand = fields.Char("Brand", help="Brand used on Product")
     landed_cost = fields.Char("ELC", help="Estimated Landed Cost")
@@ -81,9 +71,6 @@ class ProductTemplate(models.Model):
     qaa_expiry = fields.Date("QAA Expiry")
     sale_order_line_ids = fields.One2many('sale.order.line',
                                           'product_templ_id', 'Sales Order')
-    paint_finish = fields.Char("Paint/Finish")
-    item_no = fields.Integer('Item No.')
-    item_description = fields.Char('Item Description')
     product_classification = fields.Many2one('product.classification',
                                              "Product Classification")
     list_price = fields.Float(
@@ -92,26 +79,26 @@ class ProductTemplate(models.Model):
         compute='_compute_list_price',
         readonly=False, store=True,
         help="Compute price based on Cost and Gross Margin values")
-
+    
     @api.onchange('carton_w_cm', 'carton_d_cm', 'carton_h_cm')
     def _onchange_cu_ft(self):
-        carton_cm = (self.carton_d_cm * self.carton_h_cm * self.carton_w_cm)
-        carton_d_in = (self.carton_d_cm * 0.39370)
-        carton_h_in = (self.carton_h_cm * 0.39370)
-        carton_w_in = (self.carton_w_cm * 0.39370)
-        cubic_feet = (carton_cm / 28316.846592)
+        carton_cm = ((self.carton_d_cm * self.carton_h_cm * self.carton_w_cm)/1000000)
+        carton_d_in = (self.carton_d_cm / 2.54)
+        carton_h_in = (self.carton_h_cm / 2.54)
+        carton_w_in = (self.carton_w_cm / 2.54)
+        cubic_feet  = ((self.carton_d_in * self.carton_h_in * self.carton_w_in)/1728) 
         self.update({'cbm': carton_cm,
                      'carton_d_in': carton_d_in,
                      'carton_h_in': carton_h_in,
                      'carton_w_in': carton_w_in,
                      'cu_ft': cubic_feet})
-
+#
     @api.onchange('carton_w_in', 'carton_d_in', 'carton_h_in')
     def _onchange_cu_ft_inches(self):
         carton_cm = (self.carton_d_in * self.carton_h_in * self.carton_w_in)
-        carton_d_cm = (self.carton_d_in / 0.39370)
-        carton_h_cm = (self.carton_h_in / 0.39370)
-        carton_w_cm = (self.carton_w_in / 0.39370)
+        carton_d_cm = (self.carton_d_in *  2.54)
+        carton_h_cm = (self.carton_h_in *  2.54)
+        carton_w_cm = (self.carton_w_in *  2.54)
         cubic_feet = (carton_cm / 1728)
         self.update({'carton_d_cm': carton_d_cm,
                      'carton_h_cm': carton_h_cm,
@@ -194,29 +181,28 @@ class SkitProductProduct(models.Model):
 
     @api.onchange('carton_w_cm', 'carton_d_cm', 'carton_h_cm')
     def _onchange_cu_ft(self):
-        carton_cm = (self.carton_d_cm * self.carton_h_cm * self.carton_w_cm)
-        carton_d_in = (self.carton_d_cm * 0.39370)
-        carton_h_in = (self.carton_h_cm * 0.39370)
-        carton_w_in = (self.carton_w_cm * 0.39370)
-        cubic_feet = (carton_cm / 28316.846592)
+        carton_cm = ((self.carton_d_cm * self.carton_h_cm * self.carton_w_cm)/1000000)
+        carton_d_in = (self.carton_d_cm / 2.54)
+        carton_h_in = (self.carton_h_cm / 2.54)
+        carton_w_in = (self.carton_w_cm / 2.54)
+        cubic_feet  = ((self.carton_d_in * self.carton_h_in * self.carton_w_in)/1728) 
         self.update({'cbm': carton_cm,
                      'carton_d_in': carton_d_in,
                      'carton_h_in': carton_h_in,
                      'carton_w_in': carton_w_in,
                      'cu_ft': cubic_feet})
-
     @api.onchange('carton_w_in', 'carton_d_in', 'carton_h_in')
     def _onchange_cu_ft_inches(self):
         carton_cm = (self.carton_d_in * self.carton_h_in * self.carton_w_in)
-        carton_d_cm = (self.carton_d_in / 0.39370)
-        carton_h_cm = (self.carton_h_in / 0.39370)
-        carton_w_cm = (self.carton_w_in / 0.39370)
+        carton_d_cm = (self.carton_d_in *  2.54)
+        carton_h_cm = (self.carton_h_in * 2.54)
+        carton_w_cm = (self.carton_w_in * 2.54)
         cubic_feet = (carton_cm / 1728)
         self.update({'carton_d_cm': carton_d_cm,
                      'carton_h_cm': carton_h_cm,
                      'carton_w_cm': carton_w_cm,
                      'cu_ft': cubic_feet})
-
+        
     @api.onchange('sell_price')
     def onchange_sellprice(self):
         cost_price = self.standard_price
