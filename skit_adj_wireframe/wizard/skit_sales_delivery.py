@@ -25,8 +25,6 @@ class SkitSalesDelivery(models.TransientModel):
                             ai.adj_po,
                             so.client_order_ref as customerpo,
                             po.name as wbapo,
-                            pt.item_no,
-                            pt.item_description,
                             ((select sum(product_qty) from purchase_order_line where order_id = po.id ) - (select sum(qty_received) from purchase_order_line where order_id = po.id )) as qtyopen,
                             sp.deadline_book,
                             sp.actual_booked_date,

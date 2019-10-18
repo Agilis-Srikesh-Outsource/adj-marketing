@@ -58,17 +58,15 @@ class AccountInvoiceReport(models.Model):
     gross_profit_precent = fields.Float('Gross Profit(%)', readonly=True, group_operator = 'avg')
     product_qty = fields.Float(string='Unit Sold', readonly=True)
     price_total = fields.Float(string='Sales($)', readonly=True)
-    item_id = fields.Integer('Item ID', readonly=True)
-    item_description = fields.Char('Item Description', readonly=True)
 
     def _select(self):
-        return super(AccountInvoiceReport, self)._select() + ", sub.cost_price as cost_price, sub.gross_profit_amt as gross_profit_amt, sub.gross_profit_precent as gross_profit_precent, sub.item_id as item_id, sub.item_description as item_description"
+        return super(AccountInvoiceReport, self)._select() + ", sub.cost_price as cost_price, sub.gross_profit_amt as gross_profit_amt, sub.gross_profit_precent as gross_profit_precent"
 
     def _sub_select(self):
-        return super(AccountInvoiceReport, self)._sub_select() + ", (ip.value_float * ail.quantity) as cost_price, (SUM(ail.price_subtotal_signed * invoice_type.sign) - (ip.value_float * ail.quantity)) as gross_profit_amt, (MAX((ail.price_subtotal_signed * invoice_type.sign) - (ip.value_float * ail.quantity))/(ip.value_float * ail.quantity))*100 as gross_profit_precent, pt.item_no as item_id, pt.item_description as item_description"
+        return super(AccountInvoiceReport, self)._sub_select() + ", (ip.value_float * ail.quantity) as cost_price, (SUM(ail.price_subtotal_signed * invoice_type.sign) - (ip.value_float * ail.quantity)) as gross_profit_amt, (MAX((ail.price_subtotal_signed * invoice_type.sign) - (ip.value_float * ail.quantity))/(ip.value_float * ail.quantity))*100 as gross_profit_precent"
 
     def _group_by(self):
-        return super(AccountInvoiceReport, self)._group_by() + ", ip.value_float, pt.item_no, pt.item_description"
+        return super(AccountInvoiceReport, self)._group_by() + ", ip.value_float"
 
     def _from(self):
         return super(AccountInvoiceReport, self)._from() + " LEFT JOIN ir_property ip ON (ip.name='standard_price' AND ip.res_id=CONCAT('product.product,',pr.id) AND ip.company_id=ai.company_id)"

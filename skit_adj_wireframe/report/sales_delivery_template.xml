@@ -41,8 +41,6 @@
 										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">ADJ PO</th>
 										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Customer PO</th>
 										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">WBA PO</th>
-										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Item No.</th>
-										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Item Description</th>
 										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Qty Open</th>
 										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Deadline Booked</th>
 										<th class="text-left" style="background-color: #49A7C5 !important; color: #fff !important;">Actual Booked Date</th>
@@ -98,16 +96,6 @@
 											<td>
 												<span>
 													<t t-esc="order['wbapo']" />
-												</span>
-											</td>
-											<td>
-												<span>
-													<t t-esc="order['item_no']" />
-												</span>
-											</td>
-											<td>
-												<span>
-													<t t-esc="order['item_description']" />
 												</span>
 											</td>
 											<td>
