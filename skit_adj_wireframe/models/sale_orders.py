@@ -96,11 +96,13 @@ class SkitSaleOrderLine(models.Model):
         products = self.env['product.product'].search([('id', '=', product)])
         margin = products.gross_margin
         prec = self.env['decimal.precision'].precision_get('Product Price')
-        cost = (price_unit-products.standard_price)
-        price = ((cost)/products.standard_price)
-        tot_price = (price*100)
-        tot_amount = float_repr(float_round(tot_price, precision_digits=prec), precision_digits=prec)
-        if float(tot_amount) < margin:
-            return False
-        else:
-            return True
+        cost_price= products.standard_price
+        if price_unit and cost_price:
+            cost = (price_unit-cost_price)
+            price = ((cost)/products.standard_price)
+            tot_price = (price*100)
+            tot_amount = float_repr(float_round(tot_price, precision_digits=prec), precision_digits=prec)
+            if float(tot_amount) < margin:
+                return False
+            else:
+                return True

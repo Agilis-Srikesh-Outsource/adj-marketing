@@ -59,6 +59,7 @@
 	         <xpath expr="//page[@name='general_information']/group/group[2]//field[@name='list_price']" position="replace">
 	          	<field name="list_price" invisible="1" widget='monetary'  options="{'currency_field': 'currency_id', 'field_digits': True}"/>
 	         </xpath>
+	        <xpath expr="//page[@name='sales']" position="replace"></xpath> 
             <xpath expr="//page[@name='inventory']" position="after">
             	<page string="Quality Tracking" name="quality_track">
             		<group>
@@ -102,12 +103,6 @@
 							</tree>
 						</field>
 					</div>
-					<group name="pos" string="Point of Sale">
-						<field name="available_in_pos" />
-						<field name="pos_categ_id" attrs="{'invisible': [('available_in_pos', '=', False)]}"
-							string="PoS Category" />
-						<field name="to_weight" attrs="{'invisible': [('available_in_pos', '=', False)]}" />
-					</group>
 					<group name="sale">
 						<group name="email_template_and_project" attrs="{'invisible':[('type', '!=', 'service')]}" />
 					</group>
@@ -184,7 +179,6 @@
 		<field name="arch" type="xml">
 			<xpath expr="//page[@name='purchase']" position="replace">
 			</xpath>
-			<xpath expr="//page[@name='sales']" position="replace"></xpath>
 		</field>
 	</record>
     <record id="skit_view_product_temp_form_inherit23" model="ir.ui.view">
