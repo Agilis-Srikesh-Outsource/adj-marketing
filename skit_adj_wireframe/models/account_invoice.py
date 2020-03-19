@@ -43,7 +43,14 @@ class SkitAccountInvoice(models.Model):
                                 ('yes', _('Yes')),
                                 ('no', _('No'))], string='Complete')
 
-
+    wic_number = fields.Char("WIC #")
+    pieces = fields.Char("Pieces")
+    cases = fields.Char("Cases")
+    net_amount = fields.Float("Net Amount")
+    total_cross_weight = fields.Float("Total Gross Weight")
+    unit_price = fields.Float("Unit Price")
+    factory = fields.Char("Factory")
+    
 class SkitAccountInvoiceLine(models.Model):
     _inherit = "account.invoice.line"
 

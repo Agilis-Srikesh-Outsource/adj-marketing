@@ -44,6 +44,9 @@ class SaleOrder(models.Model):
     description = fields.Text("Description")
     sale_duty = fields.Char("Duty$")
     freight_cuft = fields.Float("Freight per Cu Ft", default="3")
+    sa_frieght = fields.Datetime("SA Frieght")
+    cfs_cut_off = fields.Char("CFS Cut off")
+    in_pl = fields.Char("In & PL")
 
     @api.multi
     def action_confirm(self):
@@ -106,3 +109,44 @@ class SkitSaleOrderLine(models.Model):
                 return False
             else:
                 return True
+            
+class SaleReport(models.Model):
+    _inherit = "sale.report"
+
+    port = fields.Char("Port", help="Shipping Port")
+    client_order_ref = fields.Char(string='Customer PO', copy=False)
+    fcr_no = fields.Char("FCR #")
+    etd = fields.Char("ETD")
+    adj_po  = fields.Char("ADJ PO") 
+    description_sale = fields.Char("Item Description")
+    remark = fields.Char(string='Remarks', help="Notes/Remark")
+    deadline_book = fields.Date("Deadline Booked")
+    actual_booked_date = fields.Datetime("Actual Booked Date")
+    received_date = fields.Datetime("SA Deadline")
+    cargo_received_date = fields.Datetime("Cargo Received Date")
+    actual_etd = fields.Datetime("Actual ETD")
+    wpa_name = fields.Char("WBA PO")
+    qtyopen = fields.Float("QTY Open")
+    crd = fields.Char(string="Delivery By/CRD", help="CRD/DELIVERY DATE")
+    sa_frieght = fields.Datetime("SA Frieght")
+    cfs_cut_off = fields.Char("CFS Cut off")
+    in_pl = fields.Char("In & PL")
+
+    def _select(self):
+        return super(SaleReport, self)._select() + ",s.remark as remark,s.client_order_ref as client_order_ref,t.port as port,t.description_sale as description_sale,ai.fcr_no as fcr_no,ai.etd as etd, ai.adj_po as adj_po, sp.deadline_book as deadline_book,\
+                                                    sp.actual_booked_date as actual_booked_date,sp.received_date as received_date,sp.cargo_received_date as cargo_received_date,\
+                                                    sp.actual_etd,po.crd as crd,po.name as wpa_name,((select sum(product_qty) from purchase_order_line where order_id = po.id ) - (select sum(qty_received) from purchase_order_line where order_id = po.id )) as qtyopen,\
+                                                    s.sa_frieght as sa_frieght,s.cfs_cut_off as cfs_cut_off,s.in_pl as in_pl"
+    
+    def _from(self):
+        return super(SaleReport, self)._from() + "left join account_invoice ai on (ai.origin = s.name)\
+                                                left join stock_picking sp on (sp.origin = s.name)\
+                                                inner join stock_move sm on sp.id = sm.picking_id\
+                                                left outer join purchase_request_line prl on sm.id = prl.move_id\
+                                                left outer join purchase_request pr on prl.request_id = pr.id\
+                                                left outer join purchase_order_line pol on prl.purchase_line_id = pol.id\
+                                                left outer join purchase_order po on pol.order_id = po.id"
+
+    def _group_by(self):
+        return super(SaleReport, self)._group_by() + ",s.remark,s.client_order_ref,t.port,t.description_sale,ai.fcr_no,ai.etd, ai.adj_po,sp.deadline_book,sp.actual_booked_date,sp.received_date,sp.cargo_received_date,sp.actual_etd,\
+                                                    po.name,po.id,po.crd,s.sa_frieght,s.cfs_cut_off,s.in_pl"
