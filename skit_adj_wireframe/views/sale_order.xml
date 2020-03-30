@@ -38,6 +38,9 @@
                      <field name="allowance_description"/>
                      <field name="freight_cuft"/>
                      <field name="sale_duty"/>
+                     <field name="sa_frieght"/>
+					 <field name="cfs_cut_off"/>
+					 <field name="in_pl"/>
                 </xpath>
                 
                 <xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" position="replace">

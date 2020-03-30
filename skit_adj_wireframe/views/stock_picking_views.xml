@@ -37,6 +37,8 @@
                                     <field name="sample_collection"/>
 	                                <field name="sample_selling"/>
 	                                <field name="po_date_receipt"/>
+	                                <field name="factory"/>
+					            	<field name="fcr_no"/>
                                 </group>
                                  <group>
                                  	<field name="deadline_book"/>
@@ -49,8 +51,22 @@
 					            	<field name="carton_d_cm"/>
 					            	<field name="carton_h_cm"/>
 					            	<field name="cu_ft"/>
+					            	<field name="adj_po"/>
+					            	<field name="so_number"/>
+					            	<field name="wic_number"/>
+					            	<field name="item_description"/>
+					            	<field name="case_pack"/>
+					            	<field name="pieces_ordered"/>
+					            	<field name="quantity"/>
+					            	<field name="fob_cost"/>
+					            	<field name="total_po_cost"/>
+					            	<field name="shipping_window_start"/>
+					            	<field name="shipping_window_end"/>
+					            	<field name="port"/>
                                 </group>
+                                 
                             </group>
+                           <field name="remark" placeholder="Notes/Remarks..."/>
                         </page>
                 </xpath>
                 <xpath expr="//field[@name='move_lines']" position="replace">

@@ -19,6 +19,10 @@
 		   		<field name="etd" />
 		   		<field name="fcr_confirmed" />
 		   		<field name="original_fcr_receive" />
+		   		<field name="wic_number"/>
+		   		<field name="pieces"/>
+		   		<field name="cases"/>
+		   		<field name="net_amount"/>
 			</xpath>
 			<xpath expr="//page[@name='other_info']/group//field[@name='name']" position="after">
 		   		<field name="shipping_method" />
@@ -32,6 +36,9 @@
 		   		<field name="total_net_weight"/>
 		   		<field name="sail_window"/>
 		   		<field name="local_charge"/>
+		   		<field name="factory"/>
+		   		<field name="unit_price"/>
+		   		<field name="total_cross_weight"/>
 			</xpath>
 			<xpath expr="//notebook" position="after">
 				<field name="remark" placeholder="Notes/Remarks..."/>
