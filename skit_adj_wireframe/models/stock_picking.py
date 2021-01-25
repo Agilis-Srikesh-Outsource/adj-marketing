@@ -42,6 +42,23 @@ class Picking(models.Model):
     carton_d_cm = fields.Float("Carton D (cm)")
     carton_h_cm = fields.Float("Carton H (cm)")
     cu_ft = fields.Float(string="CU Ft", help="Master Carton CU FT")
+    factory = fields.Char(string="Factory")
+    fcr_no  = fields.Char("FCR")
+    
+    adj_po  = fields.Char("ADJ PO ") 
+    so_number = fields.Char("SO #")
+    wic_number = fields.Char("WIC #")
+    item_description = fields.Char("Item Description")
+    case_pack = fields.Char(string="Case Pack")
+    pieces_ordered = fields.Char(string="Pieces Ordered")
+    quantity = fields.Integer(string="Quantity(carton)")
+    fob_cost = fields.Char(string="FOB Cost/Price")
+    total_po_cost = fields.Char(string="Total Po Cost")
+    shipping_window_start = fields.Date(string="Shipping Window Start")
+    shipping_window_end = fields.Date(string="Shipping Window End")
+    port = fields.Char("Port", help="Shipping Port")
+    remark = fields.Text(string='Remarks',help="Notes/Remark")
+    
 
 #     @api.depends('sale_id.confirmation_date')
 #     @api.one

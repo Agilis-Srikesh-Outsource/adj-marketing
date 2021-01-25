@@ -15,6 +15,13 @@ class SkitSalesDelivery(models.TransientModel):
             'start_date': self.start_date,
             'end_date': self.end_date,
             }
+        arg=""
+        if (self.start_date and self.end_date):
+            arg = " where sp.delivery_date BETWEEN " +"'"+self.start_date+"'"+ " AND "+"'"+self.end_date+"'"
+        elif(self.start_date):
+            arg = " where sp.delivery_date>=" +"'"+self.start_date+"'"
+        elif(self.end_date):
+            arg = " where sp.delivery_date<=" +"'"+self.end_date+"'"
         self.env.cr.execute("""
                             select sp.name,
                             sm.product_id,
@@ -25,8 +32,6 @@ class SkitSalesDelivery(models.TransientModel):
                             ai.adj_po,
                             so.client_order_ref as customerpo,
                             po.name as wbapo,
-                            pt.item_no,
-                            pt.item_description,
                             ((select sum(product_qty) from purchase_order_line where order_id = po.id ) - (select sum(qty_received) from purchase_order_line where order_id = po.id )) as qtyopen,
                             sp.deadline_book,
                             sp.actual_booked_date,
@@ -50,9 +55,10 @@ class SkitSalesDelivery(models.TransientModel):
                             left outer join account_invoice ai on aip.account_invoice_id = ai.id
                             left outer join sale_order so on sp.sale_id = so.id
                             left outer join res_partner rp on po.partner_id = rp.id
-                            where sp.delivery_date BETWEEN %(start_date)s AND %(end_date)s
+                            """+arg+
+                            """
                             order by sp.name
-                    """, params,)
+                    """)
         delivery = self.env.cr.dictfetchall()
         data = {'ids': self.ids,
                 'model': self._name,
