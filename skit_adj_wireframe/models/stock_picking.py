@@ -4,6 +4,8 @@ from datetime import timedelta, datetime
 from odoo import fields, models, api, _
 from odoo.tools.misc import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 from odoo.exceptions import UserError
+from odoo.tools import float_round, float_repr
+from odoo.addons import decimal_precision as dp
 
 
 class Picking(models.Model):
@@ -38,10 +40,10 @@ class Picking(models.Model):
     sample_collection = fields.Date("Sample Collection")
     sample_selling = fields.Date("Sample Selling")
     po_date_receipt = fields.Date("PO Date Receipt")
-    carton_w_cm = fields.Float("Carton W (cm)")
-    carton_d_cm = fields.Float("Carton D (cm)")
-    carton_h_cm = fields.Float("Carton H (cm)")
-    cu_ft = fields.Float(string="CU Ft", help="Master Carton CU FT")
+    carton_w_cm = fields.Float("Carton W (cm)",digits=dp.get_precision('Product Price'))
+    carton_d_cm = fields.Float("Carton D (cm)",digits=dp.get_precision('Product Price'))
+    carton_h_cm = fields.Float("Carton H (cm)",digits=dp.get_precision('Product Price'))
+    cu_ft = fields.Float(string="CU Ft", help="Master Carton CU FT",digits=dp.get_precision('Product Price'))
     factory = fields.Char(string="Factory")
     fcr_no  = fields.Char("FCR")
     
@@ -197,4 +199,5 @@ class Picking(models.Model):
     def _onchange_cu_ft(self):
         carton_cm = (self.carton_d_cm * self.carton_h_cm * self.carton_w_cm)
         cubic_feet = (carton_cm / 28316.846592)
-        self.update({'cu_ft': cubic_feet})
+        cubicfeet = float_repr(float_round(cubic_feet, precision_digits=prec),precision_digits=prec)
+        self.update({'cu_ft': cubicfeet})

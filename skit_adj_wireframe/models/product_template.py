@@ -9,7 +9,8 @@ from odoo.exceptions import UserError
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    cu_ft = fields.Float(string="CU FT", help="Master Carton CU FT")
+    cu_ft = fields.Float(string="CU FT", help="Master Carton CU FT",
+                         digits=dp.get_precision('Product Price'))
    # buy_price = fields.Float('Buy Price',
    #                          digits=dp.get_precision('Product Price'))
     sell_price = fields.Float('Sell Price1',
@@ -36,18 +37,18 @@ class ProductTemplate(models.Model):
     pdq = fields.Selection([
                             ('yes', _('Yes')),
                             ('no', _('No'))], string='PDQ')
-    item_weight = fields.Float("Item Weight KG")
-    carton_weight = fields.Float("Carton Weight KG")
-    item_w_cm = fields.Float("Item W (cm)")
-    item_d_cm = fields.Float("Item D (cm)")
-    item_h_cm = fields.Float("Item H (cm)")
-    carton_w_cm = fields.Float("Carton W (cm)")
-    carton_d_cm = fields.Float("Carton D (cm)")
-    carton_h_cm = fields.Float("Carton H (cm)")
-    carton_w_in = fields.Float("Carton W (in)")
-    carton_d_in = fields.Float("Carton D (in)")
-    carton_h_in = fields.Float("Carton H (in)")
-    cbm = fields.Float("CBM", help="Master Carton Cube")
+    item_weight = fields.Float("Item Weight KG",digits=dp.get_precision('Product Price'))
+    carton_weight = fields.Float("Carton Weight KG",digits=dp.get_precision('Product Price'))
+    item_w_cm = fields.Float("Item W (cm)",digits=dp.get_precision('Product Price'))
+    item_d_cm = fields.Float("Item D (cm)",digits=dp.get_precision('Product Price'))
+    item_h_cm = fields.Float("Item H (cm)",digits=dp.get_precision('Product Price'))
+    carton_w_cm = fields.Float("Carton W (cm)",digits=dp.get_precision('Product Price'))
+    carton_d_cm = fields.Float("Carton D (cm)",digits=dp.get_precision('Product Price'))
+    carton_h_cm = fields.Float("Carton H (cm)",digits=dp.get_precision('Product Price'))
+    carton_w_in = fields.Float("Carton W (in)",digits=dp.get_precision('Product Price'))
+    carton_d_in = fields.Float("Carton D (in)",digits=dp.get_precision('Product Price'))
+    carton_h_in = fields.Float("Carton H (in)",digits=dp.get_precision('Product Price'))
+    cbm = fields.Float("CBM", help="Master Carton Cube",digits=dp.get_precision('Product Price'))
     gtin = fields.Char("GTIN")
     remark = fields.Text(string='Remarks', help="Notes/Remark")
     product_brand = fields.Char("Brand", help="Brand used on Product")
@@ -83,27 +84,33 @@ class ProductTemplate(models.Model):
     @api.onchange('carton_w_cm', 'carton_d_cm', 'carton_h_cm')
     def _onchange_cu_ft(self):
         carton_cm = ((self.carton_d_cm * self.carton_h_cm * self.carton_w_cm)/1000000)
+        prec = self.env['decimal.precision'].precision_get('Product Price')
+        cartoncm = float_repr(float_round(carton_cm, precision_digits=prec),precision_digits=prec)
         carton_d_in = (self.carton_d_cm / 2.54)
         carton_h_in = (self.carton_h_cm / 2.54)
         carton_w_in = (self.carton_w_cm / 2.54)
         cubic_feet  = ((self.carton_d_in * self.carton_h_in * self.carton_w_in)/1728) 
-        self.update({'cbm': carton_cm,
+        cubicfeet = float_repr(float_round(cubic_feet, precision_digits=prec),precision_digits=prec)
+        self.update({'cbm': cartoncm,
                      'carton_d_in': carton_d_in,
                      'carton_h_in': carton_h_in,
                      'carton_w_in': carton_w_in,
-                     'cu_ft': cubic_feet})
+                     'cu_ft': cubicfeet})
 #
     @api.onchange('carton_w_in', 'carton_d_in', 'carton_h_in')
     def _onchange_cu_ft_inches(self):
         carton_cm = (self.carton_d_in * self.carton_h_in * self.carton_w_in)
+        prec = self.env['decimal.precision'].precision_get('Product Price')
+        cartoncm = float_repr(float_round(carton_cm, precision_digits=prec),precision_digits=prec)
         carton_d_cm = (self.carton_d_in *  2.54)
         carton_h_cm = (self.carton_h_in *  2.54)
         carton_w_cm = (self.carton_w_in *  2.54)
-        cubic_feet = (carton_cm / 1728)
+        cubic_feet = (float(cartoncm) / 1728)
+        cubicfeet = float_repr(float_round(cubic_feet, precision_digits=prec),precision_digits=prec)
         self.update({'carton_d_cm': carton_d_cm,
                      'carton_h_cm': carton_h_cm,
                      'carton_w_cm': carton_w_cm,
-                     'cu_ft': cubic_feet})
+                     'cu_ft': cubicfeet})
 
     @api.onchange('sell_price')
     def onchange_sellprice(self):
@@ -182,26 +189,31 @@ class SkitProductProduct(models.Model):
     @api.onchange('carton_w_cm', 'carton_d_cm', 'carton_h_cm')
     def _onchange_cu_ft(self):
         carton_cm = ((self.carton_d_cm * self.carton_h_cm * self.carton_w_cm)/1000000)
+        prec = self.env['decimal.precision'].precision_get('Product Price')
+        cartoncm = float_repr(float_round(carton_cm, precision_digits=prec),precision_digits=prec)
         carton_d_in = (self.carton_d_cm / 2.54)
         carton_h_in = (self.carton_h_cm / 2.54)
         carton_w_in = (self.carton_w_cm / 2.54)
         cubic_feet  = ((self.carton_d_in * self.carton_h_in * self.carton_w_in)/1728) 
-        self.update({'cbm': carton_cm,
+        cubicfeet = float_repr(float_round(cubic_feet, precision_digits=prec),precision_digits=prec)
+        self.update({'cbm': cartoncm,
                      'carton_d_in': carton_d_in,
                      'carton_h_in': carton_h_in,
                      'carton_w_in': carton_w_in,
-                     'cu_ft': cubic_feet})
+                     'cu_ft': cubicfeet})
     @api.onchange('carton_w_in', 'carton_d_in', 'carton_h_in')
     def _onchange_cu_ft_inches(self):
         carton_cm = (self.carton_d_in * self.carton_h_in * self.carton_w_in)
+        cartoncm = float_repr(float_round(carton_cm, precision_digits=prec),precision_digits=prec)
         carton_d_cm = (self.carton_d_in *  2.54)
         carton_h_cm = (self.carton_h_in * 2.54)
         carton_w_cm = (self.carton_w_in * 2.54)
-        cubic_feet = (carton_cm / 1728)
+        cubic_feet = (float(cartoncm) / 1728)
+        cubicfeet = float_repr(float_round(cubic_feet, precision_digits=prec),precision_digits=prec)
         self.update({'carton_d_cm': carton_d_cm,
                      'carton_h_cm': carton_h_cm,
                      'carton_w_cm': carton_w_cm,
-                     'cu_ft': cubic_feet})
+                     'cu_ft': cubicfeet})
         
     @api.onchange('sell_price')
     def onchange_sellprice(self):
