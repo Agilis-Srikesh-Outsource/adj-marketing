@@ -36,7 +36,7 @@ class SaleOrder(models.Model):
     fob_description = fields.Char(string="FOB/Description")
     promo_deal_no = fields.Char(string="Promotional/Deal No.")
     request_delivery_date = fields.Datetime(string="Request Delivery Date")
-    weight = fields.Float(string="Weight(Ibs)")
+    weight = fields.Float(string="Weight(Ibs)",digits=dp.get_precision('Product Price'))
     height = fields.Float(string="Height(Feet)")
     allowance_percent = fields.Float(string="Allowance Percent")
     allowance_description = fields.Char(string="Allowance Description")
@@ -67,11 +67,13 @@ class SaleOrder(models.Model):
                     availabiltity = True
             carton_cm = (w_cm * d_cm * h_cm)
             cubic_feet = (carton_cm / 28316.846592)
+            cubicfeet = float_repr(float_round(cubic_feet, precision_digits=prec),precision_digits=prec)
+            tot_weight = float_repr(float_round(weight, precision_digits=prec),precision_digits=prec)
             picking.update({'carton_w_cm': w_cm,
                             'carton_d_cm': d_cm,
                             'carton_h_cm': h_cm,
-                            'cu_ft': cubic_feet,
-                            'weight': weight})
+                            'cu_ft': cubicfeet,
+                            'weight': tot_weight})
             if(not availabiltity):
                 picking.delivery_date = current_date
                 picking.so_release_target = current_date
