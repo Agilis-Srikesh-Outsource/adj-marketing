@@ -13,7 +13,7 @@
 
 """,
     'depends': ['sale', 'account', 'sale_stock', 'purchase', 'stock',
-                'skit_purchase_request', 'delivery','base'],
+                'skit_purchase_request', 'delivery','base','product'],
     'data': [
         'wizard/skit_sales_delivery.xml',
         'wizard/skit_warning.xml',
