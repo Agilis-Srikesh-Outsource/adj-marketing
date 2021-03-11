@@ -186,18 +186,20 @@
 		<field name="model">product.template</field>
 		<field name="inherit_id" ref="stock.product_template_form_view_procurement_button" />
 		<field name="arch" type="xml">
-			<xpath expr="//field[@name='responsible_id']" position="replace">
-				<field name="port" />
-				<field name="item_w_cm" />
-				<field name="item_d_cm" />
-				<field name="item_h_cm" />
-				<field name="carton_w_cm" />
-				<field name="carton_d_cm" />
-				<field name="carton_h_cm" />
-				<field name="carton_w_in" />
-				<field name="carton_d_in" />
-				<field name="carton_h_in" />
-				<field name="cbm" />
+			<xpath expr="//group[@name='group_lots_and_weight']" position="before">
+				  <group>
+					<field name="port" />
+					<field name="item_w_cm" />
+					<field name="item_d_cm" />
+					<field name="item_h_cm" />
+					<field name="carton_w_cm" />
+					<field name="carton_d_cm" />
+					<field name="carton_h_cm" />
+					<field name="carton_w_in" />
+					<field name="carton_d_in" />
+					<field name="carton_h_in" />
+					<field name="cbm" />
+			  </group>
 			</xpath>
 		</field>
 	</record>
