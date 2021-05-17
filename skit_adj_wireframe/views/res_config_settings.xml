@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+        <record id="skit_res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">skit.res.config.settings.view.form.inherit.stock</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="30"/>
+            <field name="inherit_id" ref="stock.res_config_settings_view_form" />
+            <field name="arch" type="xml">
+            	<xpath expr="//div[@data-string='Inventory']/h2[4]" position="before" >
+					<div class="row mt16 o_settings_container">
+ 						<div class="col-xs-12 col-md-6 o_setting_box">
+	                        <div class="o_setting_right_pane">
+	                            <div class="content-group">
+	                                <div class="row mt16">
+	                                    <label for="group_carton" class="col-md-3 o_light_label"/>
+	                                    <field name="group_carton"/>
+	                                </div>
+	                            </div>
+	                        </div>
+                    	</div>
+                    	<div class="col-xs-12 col-md-6 o_setting_box">
+	                        <div class="o_setting_right_pane">
+	                            <div class="content-group">
+	                                <div class="row mt16">
+	                                    <label for="group_cu_ft" class="col-md-3 o_light_label"/>
+	                                    <field name="group_cu_ft"/>
+	                                </div>
+	                            </div>
+	                        </div>
+                    	</div>
+                	</div>
+           		</xpath>                                 
+			</field>
+		</record>
+	</data>
+</odoo>

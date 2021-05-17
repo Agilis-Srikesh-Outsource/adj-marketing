@@ -2,6 +2,7 @@
 
 from odoo import fields, models, api,  _
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from datetime import datetime
 
 
 class SkitPurchaseOrder(models.Model):
@@ -18,7 +19,7 @@ class SkitPurchaseOrder(models.Model):
                                  ondelete='restrict')
     contact_name = fields.Char('Vendor Contact Name')
     contact_email = fields.Char('Vendor Contact Email')
-    po_good_through = fields.Char(string="PO Good Through")
+    po_good_through = fields.Date(string="PO Good Through")
     sample_sealing = fields.Date(string="Sample Sealing")
     sample_sealing_approval = fields.Date(string="Sample Sealing Approval")
     dupro_date = fields.Date(string="Dupro Date")
@@ -52,12 +53,23 @@ class SkitPurchaseOrder(models.Model):
                                       help="Total Number of Master Cartons")
     total_cbm = fields.Char("Total CBM")
     description = fields.Text("Description")
+    ship_via = fields.Text("Ship Via")
+    
+    @api.onchange('partner_id')
+    def _onchange_partner(self):
+        partner = self.partner_id
+        self.street = partner.street
+        self.street2 = partner.street2
+        self.zip = partner.zip
+        self.city = partner.city
+        self.state_id = partner.state_id.id
+        self.country_id = partner.country_id.id
 
 
 class skitPurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
 
-    upc_code = fields.Selection([('', _(''))], string='UPC Code')
+    upc_code = fields.Char(string='UPC Code')
     cbm_per_case = fields.Char(string="CBM Per Case")
     case_pack = fields.Char(string="Case Pack")
 
@@ -66,3 +78,14 @@ class skitPurchaseOrderLine(models.Model):
         super(skitPurchaseOrderLine, self)._onchange_quantity()
         # setted price unit value as product's cost price
         self.price_unit = self.product_id.standard_price
+        
+    @api.onchange('product_id')
+    def onchange_product_id(self):
+        product = self.product_id
+        super(skitPurchaseOrderLine, self).onchange_product_id()
+        if product:
+            self.name = product.description
+            self.upc_code = product.barcode
+            self.cbm_per_case = product.cbm
+            self.case_pack = product.case_pack
+    

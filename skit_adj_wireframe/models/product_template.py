@@ -80,37 +80,46 @@ class ProductTemplate(models.Model):
         compute='_compute_list_price',
         readonly=False, store=True,
         help="Compute price based on Cost and Gross Margin values")
+    case_pack = fields.Float("Case Pack")
     
     @api.onchange('carton_w_cm', 'carton_d_cm', 'carton_h_cm')
-    def _onchange_cu_ft(self):
-        carton_cm = ((self.carton_d_cm * self.carton_h_cm * self.carton_w_cm)/1000000)
+    def _onchange_carton(self):
+        group_carton = self.env['ir.config_parameter'].sudo().get_param('skit_adj_wireframe.group_carton')
+        group_cu_ft = self.env['ir.config_parameter'].sudo().get_param('skit_adj_wireframe.group_cu_ft')
         prec = self.env['decimal.precision'].precision_get('Product Price')
-        cartoncm = float_repr(float_round(carton_cm, precision_digits=prec),precision_digits=prec)
-        carton_d_in = (self.carton_d_cm / 2.54)
-        carton_h_in = (self.carton_h_cm / 2.54)
-        carton_w_in = (self.carton_w_cm / 2.54)
-        cubic_feet  = ((self.carton_d_in * self.carton_h_in * self.carton_w_in)/1728) 
-        cubicfeet = float_repr(float_round(cubic_feet, precision_digits=prec),precision_digits=prec)
-        self.update({'cbm': cartoncm,
-                     'carton_d_in': carton_d_in,
-                     'carton_h_in': carton_h_in,
-                     'carton_w_in': carton_w_in,
-                     'cu_ft': cubicfeet})
-#
-    @api.onchange('carton_w_in', 'carton_d_in', 'carton_h_in')
-    def _onchange_cu_ft_inches(self):
-        carton_cm = (self.carton_d_in * self.carton_h_in * self.carton_w_in)
+        if group_carton>0:
+            carton_d_in = (float(self.carton_d_cm) * float(group_carton))
+            self.carton_d_in = float_repr(float_round(carton_d_in, precision_digits=prec),precision_digits=prec)
+            carton_h_in = (float(self.carton_h_cm) * float(group_carton))
+            self.carton_h_in = float_repr(float_round(carton_h_in, precision_digits=prec),precision_digits=prec)
+            carton_w_in = (float(self.carton_w_cm) * float(group_carton))
+            self.carton_w_in = float_repr(float_round(carton_w_in, precision_digits=prec),precision_digits=prec)
+            cbm = ((self.carton_d_cm * self.carton_h_cm * self.carton_w_cm)/1000000)
+            self.cbm = float_repr(float_round(cbm, precision_digits=prec),precision_digits=prec)
+            
+        if group_cu_ft > 0:
+            cu_ft = (float(self.cbm) * float(group_cu_ft))
+            self.cu_ft = float_repr(float_round(cu_ft, precision_digits=prec),precision_digits=prec)
+        
+    @api.onchange('cbm')
+    def _onchange_cbm(self):
+        group_cu_ft = self.env['ir.config_parameter'].sudo().get_param('skit_adj_wireframe.group_cu_ft')
         prec = self.env['decimal.precision'].precision_get('Product Price')
-        cartoncm = float_repr(float_round(carton_cm, precision_digits=prec),precision_digits=prec)
-        carton_d_cm = (self.carton_d_in *  2.54)
-        carton_h_cm = (self.carton_h_in *  2.54)
-        carton_w_cm = (self.carton_w_in *  2.54)
-        cubic_feet = (float(cartoncm) / 1728)
-        cubicfeet = float_repr(float_round(cubic_feet, precision_digits=prec),precision_digits=prec)
-        self.update({'carton_d_cm': carton_d_cm,
-                     'carton_h_cm': carton_h_cm,
-                     'carton_w_cm': carton_w_cm,
-                     'cu_ft': cubicfeet})
+        if group_cu_ft > 0:
+            cu_ft = (float(self.cbm) * float(group_cu_ft))
+            self.cbm = float_repr(float_round(cu_ft, precision_digits=prec),precision_digits=prec)
+            
+    @api.onchange('item_weight')
+    def _onchange_weight(self):
+        if self.item_weight > 0:
+            self.item_weight = self.item_weight * 2.20462
+        
+        
+    @api.onchange('carton_weight')
+    def _onchange_cartonweight(self):
+        if self.carton_weight > 0:
+            self.carton_weight = self.carton_weight * 2.20462
+        
 
     @api.onchange('sell_price')
     def onchange_sellprice(self):
@@ -187,33 +196,23 @@ class SkitProductProduct(models.Model):
                                           'Sales Order')
 
     @api.onchange('carton_w_cm', 'carton_d_cm', 'carton_h_cm')
-    def _onchange_cu_ft(self):
-        carton_cm = ((self.carton_d_cm * self.carton_h_cm * self.carton_w_cm)/1000000)
+    def _onchange_carton(self):
+        group_carton = self.env['ir.config_parameter'].sudo().get_param('skit_adj_wireframe.group_carton')
+        group_cu_ft = self.env['ir.config_parameter'].sudo().get_param('skit_adj_wireframe.group_cu_ft')
         prec = self.env['decimal.precision'].precision_get('Product Price')
-        cartoncm = float_repr(float_round(carton_cm, precision_digits=prec),precision_digits=prec)
-        carton_d_in = (self.carton_d_cm / 2.54)
-        carton_h_in = (self.carton_h_cm / 2.54)
-        carton_w_in = (self.carton_w_cm / 2.54)
-        cubic_feet  = ((self.carton_d_in * self.carton_h_in * self.carton_w_in)/1728) 
-        cubicfeet = float_repr(float_round(cubic_feet, precision_digits=prec),precision_digits=prec)
-        self.update({'cbm': cartoncm,
-                     'carton_d_in': carton_d_in,
-                     'carton_h_in': carton_h_in,
-                     'carton_w_in': carton_w_in,
-                     'cu_ft': cubicfeet})
-    @api.onchange('carton_w_in', 'carton_d_in', 'carton_h_in')
-    def _onchange_cu_ft_inches(self):
-        carton_cm = (self.carton_d_in * self.carton_h_in * self.carton_w_in)
-        cartoncm = float_repr(float_round(carton_cm, precision_digits=prec),precision_digits=prec)
-        carton_d_cm = (self.carton_d_in *  2.54)
-        carton_h_cm = (self.carton_h_in * 2.54)
-        carton_w_cm = (self.carton_w_in * 2.54)
-        cubic_feet = (float(cartoncm) / 1728)
-        cubicfeet = float_repr(float_round(cubic_feet, precision_digits=prec),precision_digits=prec)
-        self.update({'carton_d_cm': carton_d_cm,
-                     'carton_h_cm': carton_h_cm,
-                     'carton_w_cm': carton_w_cm,
-                     'cu_ft': cubicfeet})
+        if group_carton>0:
+            carton_d_in = (float(self.carton_d_cm) * float(group_carton))
+            self.carton_d_in = float_repr(float_round(carton_d_in, precision_digits=prec),precision_digits=prec)
+            carton_h_in = (float(self.carton_h_cm) * float(group_carton))
+            self.carton_h_in = float_repr(float_round(carton_h_in, precision_digits=prec),precision_digits=prec)
+            carton_w_in = (float(self.carton_w_cm) * float(group_carton))
+            self.carton_w_in = float_repr(float_round(carton_w_in, precision_digits=prec),precision_digits=prec)
+            cbm = ((self.carton_d_cm * self.carton_h_cm * self.carton_w_cm)/1000000)
+            self.cbm = float_repr(float_round(cbm, precision_digits=prec),precision_digits=prec)
+            
+        if group_cu_ft > 0:
+            cu_ft = (float(self.cbm) * float(group_cu_ft))
+            self.cu_ft = float_repr(float_round(cu_ft, precision_digits=prec),precision_digits=prec)
         
     @api.onchange('sell_price')
     def onchange_sellprice(self):

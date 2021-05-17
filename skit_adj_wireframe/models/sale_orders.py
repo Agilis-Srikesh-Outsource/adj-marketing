@@ -22,7 +22,7 @@ class SaleOrder(models.Model):
     customer_items = fields.Char(string="Customer Item #")
     contract_no = fields.Char(string="Contract No.")
     ship_from = fields.Many2one('stock.warehouse', string="Ship From")
-    ship_not_later = fields.Datetime(string="Ship Not Later")
+    ship_not_later = fields.Date(string="Ship Not Later/LSD")
     ship_not_before = fields.Datetime(string="Ship Not Before")
     warehouse_contact = fields.Many2one('res.users',
                                         string="Warehouse Contact")
@@ -45,7 +45,7 @@ class SaleOrder(models.Model):
     sale_duty = fields.Char("Duty$")
     freight_cuft = fields.Float("Freight per Cu Ft", default="3")
     sa_frieght = fields.Datetime("SA Frieght")
-    cfs_cut_off = fields.Char("CFS Cut off")
+    cfs_cut_off = fields.Date("CFS Cut off")
     in_pl = fields.Char("In & PL")
 
     @api.multi
@@ -57,14 +57,15 @@ class SaleOrder(models.Model):
         d_cm = 0
         h_cm = 0
         weight = 0
+        prec = self.env['decimal.precision'].precision_get('Product Price')
         for picking in self.picking_ids:
             for mline in picking.move_lines:
                 w_cm += (mline.product_id.carton_w_cm * mline.product_uom_qty)
                 d_cm += (mline.product_id.carton_d_cm * mline.product_uom_qty)
                 h_cm += (mline.product_id.carton_h_cm * mline.product_uom_qty)
                 weight += (mline.product_id.item_weight * mline.product_uom_qty)
-                if(mline.product_uom_qty > mline.reserved_availability):
-                    availabiltity = True
+                # if(mline.product_uom_qty > mline.reserved_availability):
+                    # availabiltity = True
             carton_cm = (w_cm * d_cm * h_cm)
             cubic_feet = (carton_cm / 28316.846592)
             cubicfeet = float_repr(float_round(cubic_feet, precision_digits=prec),precision_digits=prec)
@@ -74,22 +75,34 @@ class SaleOrder(models.Model):
                             'carton_h_cm': h_cm,
                             'cu_ft': cubicfeet,
                             'weight': tot_weight})
-            if(not availabiltity):
-                picking.delivery_date = current_date
-                picking.so_release_target = current_date
-                picking.sa_release_target = current_date - timedelta(days=2)
-                picking.qaa_date = current_date - timedelta(days=4)
-                picking.inspection_date = current_date - timedelta(days=7)
-                picking.safety_complete = current_date - timedelta(days=12)
-                picking.book_by_date = current_date - timedelta(days=14)
-                picking.dupro_date = current_date - timedelta(days=21)
-                picking.sample_collection = current_date - timedelta(days=21)
-                picking.sample_selling = current_date - timedelta(days=35)
-                picking.po_date_receipt = current_date - timedelta(days=56)
-                picking.po_good_through = current_date + timedelta(days=9)
-                picking.start_ship_window = current_date + timedelta(days=14)
-                picking.lsd = current_date + timedelta(days=28)
-
+            # if(not availabiltity):
+                # picking.delivery_date = current_date
+                # picking.so_release_target = current_date
+                # picking.sa_release_target = current_date - timedelta(days=2)
+                # picking.qaa_date = current_date - timedelta(days=4)
+                # picking.inspection_date = current_date - timedelta(days=7)
+                # picking.safety_complete = current_date - timedelta(days=12)
+                # picking.book_by_date = current_date - timedelta(days=14)
+                # picking.dupro_date = current_date - timedelta(days=21)
+                # picking.sample_collection = current_date - timedelta(days=21)
+                # picking.sample_selling = current_date - timedelta(days=35)
+                # picking.po_date_receipt = current_date - timedelta(days=56)
+                # picking.po_good_through = current_date + timedelta(days=9)
+                # picking.start_ship_window = current_date + timedelta(days=14)
+                # picking.lsd = current_date + timedelta(days=28)
+                
+    @api.model
+    def create(self, vals):
+        order = super(SaleOrder, self).create(vals)
+        current_date = fields.Date.from_string(fields.Date.today())
+        order.ship_not_later = current_date
+        order.cfs_cut_off = current_date - timedelta(days=19)
+        return order
+    
+    @api.onchange('ship_not_later')
+    def _onchange_ship_not_later(self):
+        ship_not_later = fields.Date.from_string(self.ship_not_later) 
+        self.cfs_cut_off = ship_not_later - timedelta(days=19)
 
 class SkitSaleOrderLine(models.Model):
     _inherit = "sale.order.line"

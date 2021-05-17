@@ -23,6 +23,7 @@
 				<field name="contact_name"/>
 				<field name="contact_email"/>
 				<field name="description"/>
+				<field name="ship_via"/>
 			</xpath>
 		 	<xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" position="replace">
 				<field name="product_id" string="Retail Item Number"/>

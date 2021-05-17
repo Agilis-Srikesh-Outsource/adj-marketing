@@ -15,6 +15,7 @@
     'depends': ['sale', 'account', 'sale_stock', 'purchase', 'stock',
                 'skit_purchase_request', 'delivery','base','product'],
     'data': [
+        'security/product_security.xml',
         'wizard/skit_sales_delivery.xml',
         'wizard/skit_warning.xml',
         'report/sale_delivery_report.xml',
@@ -24,7 +25,10 @@
         'views/product_template.xml',
         'views/purchase_order.xml',
         'views/account_invoice.xml',
-        'views/stock_picking_views.xml'
+        'views/stock_picking_views.xml',
+        'views/res_config_settings.xml',
+        'views/date_config.xml',
+        'views/report_purchase_order.xml'
     ],
 
     'installable': True,

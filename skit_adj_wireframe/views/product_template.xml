@@ -20,6 +20,10 @@
             	<field name="qty_master"/>
             	<field name="pdq"/>
            </xpath>
+           <xpath expr="//field[@name='barcode']" position="replace">
+           		<field name="barcode" string="UPC"/>
+           		<field name="case_pack"/>
+           </xpath>
 		 </field>
 	</record>
 	<record id="skit_view_product_temp_form_inherit1" model="ir.ui.view">
