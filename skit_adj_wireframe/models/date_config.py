@@ -4,7 +4,9 @@ from odoo import fields, models,_
 
 class SkitDateConfig(models.Model):
     _name = "skit.date.config"
+    _rec_name = 'name'
     
+    name = fields.Char("Name",default="")
     start_ship_window = fields.Integer(string="Start of Ship Window")
     po_good_through = fields.Integer(string="PO Good Through",
                                   help="Carols CRD/PO Good Through")

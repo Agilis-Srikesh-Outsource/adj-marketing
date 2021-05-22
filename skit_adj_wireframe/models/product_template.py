@@ -39,9 +39,14 @@ class ProductTemplate(models.Model):
                             ('no', _('No'))], string='PDQ')
     item_weight = fields.Float("Item Weight KG",digits=dp.get_precision('Product Price'))
     carton_weight = fields.Float("Carton Weight KG",digits=dp.get_precision('Product Price'))
+    item_weight_lbs = fields.Float("Item Weight LBS",digits=dp.get_precision('Product Price'))
+    carton_weight_lbs = fields.Float("Carton Weight LBS",digits=dp.get_precision('Product Price'))
     item_w_cm = fields.Float("Item W (cm)",digits=dp.get_precision('Product Price'))
     item_d_cm = fields.Float("Item D (cm)",digits=dp.get_precision('Product Price'))
     item_h_cm = fields.Float("Item H (cm)",digits=dp.get_precision('Product Price'))
+    item_w_in = fields.Float("Item W (in)",digits=dp.get_precision('Product Price'))
+    item_d_in = fields.Float("Item D (in)",digits=dp.get_precision('Product Price'))
+    item_h_in = fields.Float("Item H (in)",digits=dp.get_precision('Product Price'))
     carton_w_cm = fields.Float("Carton W (cm)",digits=dp.get_precision('Product Price'))
     carton_d_cm = fields.Float("Carton D (cm)",digits=dp.get_precision('Product Price'))
     carton_h_cm = fields.Float("Carton H (cm)",digits=dp.get_precision('Product Price'))
@@ -87,7 +92,7 @@ class ProductTemplate(models.Model):
         group_carton = self.env['ir.config_parameter'].sudo().get_param('skit_adj_wireframe.group_carton')
         group_cu_ft = self.env['ir.config_parameter'].sudo().get_param('skit_adj_wireframe.group_cu_ft')
         prec = self.env['decimal.precision'].precision_get('Product Price')
-        if group_carton>0:
+        if float(group_carton)>0:
             carton_d_in = (float(self.carton_d_cm) * float(group_carton))
             self.carton_d_in = float_repr(float_round(carton_d_in, precision_digits=prec),precision_digits=prec)
             carton_h_in = (float(self.carton_h_cm) * float(group_carton))
@@ -97,7 +102,7 @@ class ProductTemplate(models.Model):
             cbm = ((self.carton_d_cm * self.carton_h_cm * self.carton_w_cm)/1000000)
             self.cbm = float_repr(float_round(cbm, precision_digits=prec),precision_digits=prec)
             
-        if group_cu_ft > 0:
+        if float(group_cu_ft) > 0:
             cu_ft = (float(self.cbm) * float(group_cu_ft))
             self.cu_ft = float_repr(float_round(cu_ft, precision_digits=prec),precision_digits=prec)
         
@@ -105,20 +110,20 @@ class ProductTemplate(models.Model):
     def _onchange_cbm(self):
         group_cu_ft = self.env['ir.config_parameter'].sudo().get_param('skit_adj_wireframe.group_cu_ft')
         prec = self.env['decimal.precision'].precision_get('Product Price')
-        if group_cu_ft > 0:
+        if float(group_cu_ft) > 0:
             cu_ft = (float(self.cbm) * float(group_cu_ft))
-            self.cbm = float_repr(float_round(cu_ft, precision_digits=prec),precision_digits=prec)
+            self.cu_ft = float_repr(float_round(cu_ft, precision_digits=prec),precision_digits=prec)
             
     @api.onchange('item_weight')
     def _onchange_weight(self):
         if self.item_weight > 0:
-            self.item_weight = self.item_weight * 2.20462
+            self.item_weight_lbs = self.item_weight * 2.20462
         
         
     @api.onchange('carton_weight')
     def _onchange_cartonweight(self):
         if self.carton_weight > 0:
-            self.carton_weight = self.carton_weight * 2.20462
+            self.carton_weight_lbs = self.carton_weight * 2.20462
         
 
     @api.onchange('sell_price')

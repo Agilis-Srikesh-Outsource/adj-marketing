@@ -16,6 +16,7 @@
                 'skit_purchase_request', 'delivery','base','product'],
     'data': [
         'security/product_security.xml',
+        "security/ir.model.access.csv",
         'wizard/skit_sales_delivery.xml',
         'wizard/skit_warning.xml',
         'report/sale_delivery_report.xml',
@@ -28,6 +29,7 @@
         'views/stock_picking_views.xml',
         'views/res_config_settings.xml',
         'views/date_config.xml',
+        'views/date_config_demo.xml',
         'views/report_purchase_order.xml'
     ],
 

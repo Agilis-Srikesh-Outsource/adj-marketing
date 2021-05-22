@@ -101,8 +101,9 @@ class SaleOrder(models.Model):
     
     @api.onchange('ship_not_later')
     def _onchange_ship_not_later(self):
-        ship_not_later = fields.Date.from_string(self.ship_not_later) 
-        self.cfs_cut_off = ship_not_later - timedelta(days=19)
+        if self.ship_not_later:
+            ship_not_later = fields.Date.from_string(self.ship_not_later) 
+            self.cfs_cut_off = ship_not_later - timedelta(days=19)
 
 class SkitSaleOrderLine(models.Model):
     _inherit = "sale.order.line"

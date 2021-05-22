@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_skit_line_business_user,skit.line.business,model_skit_line_business,account.group_account_user,1,1,1,1
+access_skit_line_business_manager,skit.line.business,model_skit_line_business,account.group_account_manager,1,1,1,1
+access_skit_error_user,skit.error,model_skit_error,account.group_account_user,1,1,1,1
+access_skit_error_manager,skit.error,model_skit_error,account.group_account_manager,1,1,1,1
+access_skit_date_config_user,skit.date.config,model_skit_date_config,account.group_account_user,1,1,1,1
+access_skit_date_config_manager,skit.date.config,model_skit_date_config,account.group_account_manager,1,1,1,1
