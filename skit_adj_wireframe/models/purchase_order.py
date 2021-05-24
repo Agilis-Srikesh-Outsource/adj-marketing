@@ -84,8 +84,11 @@ class skitPurchaseOrderLine(models.Model):
         product = self.product_id
         super(skitPurchaseOrderLine, self).onchange_product_id()
         if product:
+            if product.attribute_value_ids:
+                self.upc_code = product.default_code
+            else:
+                self.upc_code = product.barcode
             self.name = product.description
-            self.upc_code = product.barcode
             self.cbm_per_case = product.cbm
             self.case_pack = product.case_pack
     
