@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+ 		<record id="view_date_config_tree" model="ir.ui.view">
+           <field name="name">skit.date.config.tree</field>
+           <field name="model">skit.date.config</field>
+           <field name="priority" eval="8"/>
+           <field name="arch" type="xml">
+               <tree create="false" string="Date Configuration">
+                    <field name="start_ship_window"/>
+                   	<field name="po_good_through"/>
+                    <field name="delivery_date"/>
+                    <field name="so_release_target"/>
+                    <field name="sa_release_target"/>
+                    <field name="qaa_date"/>
+                    <field name="inspection_date"/>
+                    <field name="safety_complete"/>
+                    <field name="book_by_date"/>
+                    <field name="dupro_date"/>
+                    <field name="sample_collection"/>
+	                <field name="sample_selling"/>
+	                <field name="po_date_receipt"/>
+               </tree>
+           </field>
+	</record>
+    <record id="view_date_config_form" model="ir.ui.view">
+         <field name="name">skit.date.config.form</field>
+         <field name="model">skit.date.config</field>
+         <field name="arch" type="xml">
+         		<form create="false" edit="true" string="Date Configuration">
+	            	<sheet>
+	                	<group col="2" colspan="4">
+	              			<group>
+		                    	<field name="start_ship_window"/>
+			                   	<field name="po_good_through"/>
+			                    <field name="delivery_date"/>
+			                    <field name="so_release_target"/>
+			                    <field name="sa_release_target"/>
+			                    <field name="qaa_date"/>
+			                    <field name="inspection_date"/>
+	                		</group>
+		                   	<group>
+		                   		<field name="safety_complete"/>
+			                    <field name="book_by_date"/>
+			                    <field name="dupro_date"/>
+			                    <field name="sample_collection"/>
+				                <field name="sample_selling"/>
+				                <field name="po_date_receipt"/>
+		                  	</group>
+	              		</group>
+	               </sheet>
+          	 </form>
+     	</field>
+ 	</record>
+   <record model="ir.actions.act_window" id="skit_date_config_action">
+       <field name="name">Date Configuration</field>
+       <field name="res_model">skit.date.config</field>
+       <field name="view_type">form</field>
+	   <field name="view_mode">tree,form</field>
+       <field name="domain">[]</field>
+   </record>
+   <menuitem 
+     action="skit_date_config_action" 
+     id="skit_date_config_menu" 
+     parent="stock.menu_stock_config_settings" sequence="10"/>
+   </data>
+</odoo>
+       

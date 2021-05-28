@@ -20,6 +20,10 @@
             	<field name="qty_master"/>
             	<field name="pdq"/>
            </xpath>
+           <xpath expr="//field[@name='barcode']" position="replace">
+           		<field name="barcode" string="UPC"/>
+           		<field name="case_pack"/>
+           </xpath>
 		 </field>
 	</record>
 	<record id="skit_view_product_temp_form_inherit1" model="ir.ui.view">
@@ -124,6 +128,9 @@
 		 <field name="model">product.product</field>
 		 <field name="inherit_id" ref="product.product_normal_form_view"/>
 		 <field name="arch" type="xml">
+			 <xpath expr="//field[@name='barcode']" position="replace">
+			 	<field name="barcode" string="UPC"/>
+			 </xpath>
 		 	<xpath expr="//field[@name='categ_id']" position="after">
 		 		<field name="cu_ft"/>
 		 		<br></br>
@@ -192,6 +199,9 @@
 					<field name="item_w_cm" />
 					<field name="item_d_cm" />
 					<field name="item_h_cm" />
+					<field name="item_w_in" />
+					<field name="item_d_in" />
+					<field name="item_h_in" />
 					<field name="carton_w_cm" />
 					<field name="carton_d_cm" />
 					<field name="carton_h_cm" />
@@ -199,6 +209,7 @@
 					<field name="carton_d_in" />
 					<field name="carton_h_in" />
 					<field name="cbm" />
+					<field name="cu_ft"/>
 			  </group>
 			</xpath>
 		</field>
@@ -224,8 +235,9 @@
 			</xpath>
 			<xpath expr="//group[@name='operations']" position="inside">
 				<field name="item_weight" />
+				<field name="item_weight_lbs" />
 				<field name="carton_weight" />
-				<field name="cu_ft"/>
+				<field name="carton_weight_lbs" />
 			</xpath>
 		</field>
 	</record>

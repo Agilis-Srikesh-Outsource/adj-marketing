@@ -167,37 +167,59 @@ class Picking(models.Model):
             'context': {'default_picking_id': self.id}
         }
 
-    @api.multi
-    def button_validate(self):
-        current_date = fields.Date.from_string(fields.Date.today())
-        purchase_order = self.env['purchase.order'].search([('name','=',self.origin)])
-        if purchase_order:
-            pr_lines = self.env['purchase.request.line'].search([('purchase_id','=',purchase_order.id)])
-            for pr_line in pr_lines:
-                move_id = pr_line.move_id
-                if move_id:
-                    picking_id = move_id.picking_id
-                    if picking_id:
-                        picking_id.po_date_receipt = current_date
-                        picking_id.sample_selling = current_date + timedelta(days=21)
-                        picking_id.sample_collection = current_date + timedelta(days=35)
-                        picking_id.dupro_date = current_date + timedelta(days=35)
-                        picking_id.book_by_date = current_date + timedelta(days=42)
-                        picking_id.safety_complete = current_date + timedelta(days=44)
-                        picking_id.inspection_date = current_date + timedelta(days=49)
-                        picking_id.qaa_date = current_date + timedelta(days=52)
-                        picking_id.sa_release_target = current_date + timedelta(days=54)
-                        picking_id.so_release_target = current_date + timedelta(days=56)
-                        picking_id.delivery_date = current_date + timedelta(days=56)
-                        picking_id.po_good_through = current_date + timedelta(days=65)
-                        picking_id.start_ship_window = current_date + timedelta(days=70)
-                        picking_id.lsd = current_date + timedelta(days=84)
-
-        return super(Picking, self).button_validate()
+    # @api.multi
+    # def button_validate(self):
+        # current_date = fields.Date.from_string(fields.Date.today())
+        # purchase_order = self.env['purchase.order'].search([('name','=',self.origin)])
+        # if purchase_order:
+            # pr_lines = self.env['purchase.request.line'].search([('purchase_id','=',purchase_order.id)])
+            # for pr_line in pr_lines:
+                # move_id = pr_line.move_id
+                # if move_id:
+                    # picking_id = move_id.picking_id
+                    # if picking_id:
+                        # picking_id.po_date_receipt = current_date
+                        # picking_id.sample_selling = current_date + timedelta(days=21)
+                        # picking_id.sample_collection = current_date + timedelta(days=35)
+                        # picking_id.dupro_date = current_date + timedelta(days=35)
+                        # picking_id.book_by_date = current_date + timedelta(days=42)
+                        # picking_id.safety_complete = current_date + timedelta(days=44)
+                        # picking_id.inspection_date = current_date + timedelta(days=49)
+                        # picking_id.qaa_date = current_date + timedelta(days=52)
+                        # picking_id.sa_release_target = current_date + timedelta(days=54)
+                        # picking_id.so_release_target = current_date + timedelta(days=56)
+                        # picking_id.delivery_date = current_date + timedelta(days=56)
+                        # picking_id.po_good_through = current_date + timedelta(days=65)
+                        # picking_id.start_ship_window = current_date + timedelta(days=70)
+                        # picking_id.lsd = current_date + timedelta(days=84)
+                        #
+        # return super(Picking, self).button_validate()
 
     @api.onchange('carton_w_cm', 'carton_d_cm', 'carton_h_cm')
     def _onchange_cu_ft(self):
+        prec = self.env['decimal.precision'].precision_get('Product Price')
         carton_cm = (self.carton_d_cm * self.carton_h_cm * self.carton_w_cm)
         cubic_feet = (carton_cm / 28316.846592)
         cubicfeet = float_repr(float_round(cubic_feet, precision_digits=prec),precision_digits=prec)
         self.update({'cu_ft': cubicfeet})
+    
+    @api.onchange('lsd')
+    def _onchange_lsd_date(self):
+        date_config = self.env['skit.date.config'].search([],limit=1)
+        if self.lsd:
+            lsd = fields.Date.from_string(self.lsd)
+            self.start_ship_window = lsd - timedelta(days=date_config.start_ship_window)
+            self.po_good_through = lsd - timedelta(days=date_config.po_good_through)
+            self.delivery_date = lsd - timedelta(days=date_config.delivery_date)
+            self.so_release_target = lsd - timedelta(days=date_config.so_release_target)
+            self.sa_release_target = lsd - timedelta(days=date_config.sa_release_target)
+            self.qaa_date = lsd - timedelta(days=date_config.qaa_date)
+            self.inspection_date = lsd - timedelta(days=date_config.inspection_date)
+            self.safety_complete = lsd - timedelta(days=date_config.safety_complete)
+            self.book_by_date = lsd - timedelta(days=date_config.book_by_date)
+            self.dupro_date = lsd - timedelta(days=date_config.dupro_date)
+            self.sample_collection = lsd - timedelta(days=date_config.sample_collection)
+            self.sample_selling = lsd - timedelta(days=date_config.sample_selling)
+            self.po_date_receipt = lsd - timedelta(days=date_config.po_date_receipt)
+        
+        

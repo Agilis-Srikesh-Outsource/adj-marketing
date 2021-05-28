@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="date_config" model="skit.date.config">
+            <field name="start_ship_window">14</field>
+            <field name="po_good_through">19</field>
+            <field name="delivery_date">28</field>
+            <field name="so_release_target">28</field>
+            <field name="sa_release_target">30</field>
+            <field name="qaa_date">32</field>
+            <field name="inspection_date">35</field>
+            <field name="safety_complete">40</field>
+            <field name="book_by_date">42</field>
+             <field name="dupro_date">49</field>
+             <field name="sample_collection">49</field>
+             <field name="sample_selling">63</field>
+             <field name="po_date_receipt">84</field>
+        </record>
+   </data>
+</odoo>
