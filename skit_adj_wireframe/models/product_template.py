@@ -86,6 +86,8 @@ class ProductTemplate(models.Model):
         readonly=False, store=True,
         help="Compute price based on Cost and Gross Margin values")
     case_pack = fields.Float("Case Pack")
+    material_const_finish = fields.Text("Material Construction Finish")
+    packaging_id = fields.Many2one('product.packaging',"Packaging")
     
     @api.onchange('carton_w_cm', 'carton_d_cm', 'carton_h_cm')
     def _onchange_carton(self):

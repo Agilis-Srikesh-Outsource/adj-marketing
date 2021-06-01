@@ -73,20 +73,12 @@ class skitPurchaseOrderLine(models.Model):
     cbm_per_case = fields.Char(string="CBM Per Case")
     case_pack = fields.Char(string="Case Pack")
 
-    @api.onchange('product_qty', 'product_uom')
-    def _onchange_quantity(self):
-        super(skitPurchaseOrderLine, self)._onchange_quantity()
-        # setted price unit value as product's cost price
-        self.price_unit = self.product_id.standard_price
-        
     @api.onchange('product_id')
     def onchange_product_id(self):
         product = self.product_id
         super(skitPurchaseOrderLine, self).onchange_product_id()
         if product:
             self.upc_code = product.barcode
-            if product.attribute_value_ids:
-                self.upc_code = product.default_code
             self.name = product.description
             self.cbm_per_case = product.cbm
             self.case_pack = product.case_pack
