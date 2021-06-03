@@ -47,6 +47,10 @@
             	<field name="sell_price2" widget='monetary' options="{'currency_field': 'currency_id', 'field_digits': True}"/>
             	<field name="sell_price3" widget='monetary' options="{'currency_field': 'currency_id', 'field_digits': True}"/>
             	<field name="landed_cost"/>
+            	<field name="freight_cost"/>
+            	<field name="freight_rate_cuft"/>
+            	<field name="freight_unit"/>
+            	<field name="duty_cost"/>
             	<br></br>
             	<field name="commission"/>
             </xpath>
@@ -232,6 +236,8 @@
 				<field name="item_weight_lbs" />
 				<field name="carton_weight" />
 				<field name="carton_weight_lbs" />
+				<field name="layer" />
+				<field name="pallet" />
 			</xpath>
 		</field>
 	</record>

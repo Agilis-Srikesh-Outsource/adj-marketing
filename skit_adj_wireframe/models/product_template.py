@@ -63,7 +63,7 @@ class ProductTemplate(models.Model):
     port = fields.Char("Port", help="Shipping Port")
     commission = fields.Float("Commision %", help="Sales Commision",
                               default=0.0)
-    gross_margin = fields.Float("Gross Margin%", default=30)
+    gross_margin = fields.Float("Gross Margin%")
     safty_test = fields.Date("Pre Production Safety Test")
     gmi = fields.Char("GMI")
     sample_sealing = fields.Date(string="Sample Sealing")
@@ -88,6 +88,12 @@ class ProductTemplate(models.Model):
     case_pack = fields.Float("Case Pack")
     material_const_finish = fields.Text("Material Construction Finish")
     packaging_id = fields.Many2one('product.packaging',"Packaging")
+    duty_cost = fields.Float('Duty Cost $',digits=dp.get_precision('Product Price'))
+    freight_cost = fields.Float('Freight cost $',digits=dp.get_precision('Product Price'))
+    freight_rate_cuft = fields.Float('Freight rate per Cu.ft',digits=dp.get_precision('Product Price'))
+    freight_unit = fields.Float('Freight per unit',digits=dp.get_precision('Product Price'))
+    layer = fields.Integer("Layer")
+    pallet = fields.Integer("Pallet")
     
     @api.onchange('carton_w_cm', 'carton_d_cm', 'carton_h_cm')
     def _onchange_carton(self):
@@ -126,7 +132,47 @@ class ProductTemplate(models.Model):
     def _onchange_cartonweight(self):
         if self.carton_weight > 0:
             self.carton_weight_lbs = self.carton_weight * 2.20462
-        
+            
+    @api.onchange('standard_price','sell_price')
+    def onchange_standard_price(self):
+        cost_price = self.standard_price
+        sell_price = self.sell_price
+        prec = self.env['decimal.precision'].precision_get('Product Price')
+        if sell_price and cost_price:
+            cost = (sell_price-cost_price)
+            price = ((cost)/sell_price)
+            self.gross_margin = float_repr(float_round(price, precision_digits=prec),precision_digits=prec)
+    
+    @api.onchange('duty_cost','sell_price','freight_cost')
+    def onchange_elc(self):
+        sell_price = self.sell_price
+        duty_cost = self.duty_cost
+        freight_cost = self.freight_cost
+        prec = self.env['decimal.precision'].precision_get('Product Price')
+        if freight_cost >0:
+            cost = (sell_price+duty_cost)
+            elc = ((cost)*freight_cost)
+            self.landed_cost = float_repr(float_round(elc, precision_digits=prec),precision_digits=prec)
+            
+    @api.onchange('cu_ft','freight_rate_cuft','qty_master')
+    def onchange_freight(self):
+        cu_ft = self.cu_ft
+        freight_rate_cuft = self.freight_rate_cuft
+        qty_master = self.qty_master
+        prec = self.env['decimal.precision'].precision_get('Product Price')
+        if cu_ft and freight_rate_cuft and qty_master:
+            cuft = (cu_ft*freight_rate_cuft)
+            freight_unit = ((cuft)/qty_master)
+            self.freight_unit = float_repr(float_round(freight_unit, precision_digits=prec),precision_digits=prec)      
+    
+    @api.onchange('sell_price','duty')
+    def onchange_duty(self):
+        sell_price = self.sell_price
+        duty = self.duty
+        prec = self.env['decimal.precision'].precision_get('Product Price')
+        if sell_price and duty:
+            duty_cost = (sell_price*duty)
+            self.duty_cost = float_repr(float_round(duty_cost, precision_digits=prec),precision_digits=prec)      
 
     @api.onchange('sell_price')
     def onchange_sellprice(self):
