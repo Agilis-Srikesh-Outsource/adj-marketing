@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+ 		<record id="view_ship_via_tree" model="ir.ui.view">
+           <field name="name">skit.ship.via.tree</field>
+           <field name="model">skit.ship.via</field>
+           <field name="priority" eval="8"/>
+           <field name="arch" type="xml">
+               <tree>
+                    <field name="name"/>
+               </tree>
+           </field>
+	</record>
+    <record id="view_ship_via_form" model="ir.ui.view">
+         <field name="name">skit.ship.via.form</field>
+         <field name="model">skit.ship.via</field>
+         <field name="arch" type="xml">
+         		<form string="ship Via">
+	            	<sheet>
+	                	<group col="2" colspan="4">
+	              			<field name="name"/>
+	              		</group>
+	               </sheet>
+          	 </form>
+     	</field>
+ 	</record>
+   <record model="ir.actions.act_window" id="skit_ship_via_action">
+       <field name="name">Ship Via</field>
+       <field name="res_model">skit.ship.via</field>
+       <field name="view_type">form</field>
+	   <field name="view_mode">tree,form</field>
+       <field name="domain">[]</field>
+   </record>
+   <menuitem 
+     action="skit_ship_via_action" 
+     id="skit_ship_via_menu" name="Ship Via"
+     parent="purchase.menu_purchase_config" sequence="2"/>
+   </data>
+</odoo>
+       

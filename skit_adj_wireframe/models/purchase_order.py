@@ -53,7 +53,7 @@ class SkitPurchaseOrder(models.Model):
                                       help="Total Number of Master Cartons")
     total_cbm = fields.Char("Total CBM")
     description = fields.Text("Description")
-    ship_via = fields.Text("Ship Via")
+    ship_via = fields.Many2one('skit.ship.via', "Ship Via")
     
     @api.onchange('partner_id')
     def _onchange_partner(self):

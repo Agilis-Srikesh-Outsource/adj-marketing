@@ -30,6 +30,7 @@
         'views/res_config_settings.xml',
         'views/date_config.xml',
         'views/date_config_demo.xml',
+        'views/ship_via.xml',
         'views/report_purchase_order.xml'
     ],
 
