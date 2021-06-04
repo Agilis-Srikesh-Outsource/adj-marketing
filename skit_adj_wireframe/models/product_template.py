@@ -57,7 +57,7 @@ class ProductTemplate(models.Model):
     gtin = fields.Char("GTIN")
     remark = fields.Text(string='Remarks', help="Notes/Remark")
     product_brand = fields.Char("Brand", help="Brand used on Product")
-    landed_cost = fields.Char("ELC", help="Estimated Landed Cost")
+    landed_cost = fields.Float("ELC",digits=dp.get_precision('Product Price'), help="Estimated Landed Cost")
     min_order_qty = fields.Char("MOQ", help="Minimum Order Quantity")
     lead_time = fields.Char("Lead Time")
     port = fields.Char("Port", help="Shipping Port")
@@ -142,7 +142,7 @@ class ProductTemplate(models.Model):
             price = ((cost)/sell_price)
             self.gross_margin = float_repr(float_round(price, precision_digits=prec),precision_digits=prec)
     
-    @api.onchange('duty_cost','sell_price','freight_cost')
+    @api.onchange('duty_cost','sell_price','freight_unit')
     def onchange_elc(self):
         sell_price = self.sell_price
         duty_cost = self.duty_cost
