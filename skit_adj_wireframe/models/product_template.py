@@ -89,6 +89,7 @@ class ProductTemplate(models.Model):
     material_const_finish = fields.Text("Material Construction Finish")
     packaging_id = fields.Many2one('product.packaging',"Packaging")
     duty_cost = fields.Float('Duty Cost $',digits=dp.get_precision('Product Price'))
+    freight_cost = fields.Float('Freight cost $',digits=dp.get_precision('Product Price'))
     freight_rate_cuft = fields.Float('Freight rate per Cu.ft',digits=dp.get_precision('Product Price'))
     freight_unit = fields.Float('Freight per unit',digits=dp.get_precision('Product Price'))
     layer = fields.Integer("Layer")
