@@ -89,7 +89,6 @@ class ProductTemplate(models.Model):
     material_const_finish = fields.Text("Material Construction Finish")
     packaging_id = fields.Many2one('product.packaging',"Packaging")
     duty_cost = fields.Float('Duty Cost $',digits=dp.get_precision('Product Price'))
-    freight_cost = fields.Float('Freight cost $',digits=dp.get_precision('Product Price'))
     freight_rate_cuft = fields.Float('Freight rate per Cu.ft',digits=dp.get_precision('Product Price'))
     freight_unit = fields.Float('Freight per unit',digits=dp.get_precision('Product Price'))
     layer = fields.Integer("Layer")
@@ -147,11 +146,11 @@ class ProductTemplate(models.Model):
     def onchange_elc(self):
         sell_price = self.sell_price
         duty_cost = self.duty_cost
-        freight_cost = self.freight_cost
+        freight_unit = self.freight_unit
         prec = self.env['decimal.precision'].precision_get('Product Price')
-        if freight_cost >0:
+        if freight_unit >0:
             cost = (sell_price+duty_cost)
-            elc = ((cost)*freight_cost)
+            elc = ((cost)*freight_unit)
             self.landed_cost = float_repr(float_round(elc, precision_digits=prec),precision_digits=prec)
             
     @api.onchange('cu_ft','freight_rate_cuft','qty_master')

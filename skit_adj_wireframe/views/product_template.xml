@@ -47,7 +47,6 @@
             	<field name="sell_price2" widget='monetary' options="{'currency_field': 'currency_id', 'field_digits': True}"/>
             	<field name="sell_price3" widget='monetary' options="{'currency_field': 'currency_id', 'field_digits': True}"/>
             	<field name="landed_cost"/>
-            	<field name="freight_cost"/>
             	<field name="freight_rate_cuft"/>
             	<field name="freight_unit"/>
             	<field name="duty_cost"/>
