@@ -148,10 +148,8 @@ class ProductTemplate(models.Model):
         duty_cost = self.duty_cost
         freight_unit = self.freight_unit
         prec = self.env['decimal.precision'].precision_get('Product Price')
-        if freight_unit >0:
-            cost = (sell_price+duty_cost)
-            elc = ((cost)*freight_unit)
-            self.landed_cost = float_repr(float_round(elc, precision_digits=prec),precision_digits=prec)
+        elc = (sell_price+duty_cost+freight_unit)
+        self.landed_cost = float_repr(float_round(elc, precision_digits=prec),precision_digits=prec)
             
     @api.onchange('cu_ft','freight_rate_cuft','qty_master')
     def onchange_freight(self):
