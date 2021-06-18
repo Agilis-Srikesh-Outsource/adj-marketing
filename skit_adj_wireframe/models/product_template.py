@@ -108,10 +108,22 @@ class ProductTemplate(models.Model):
             self.carton_w_in = float_repr(float_round(carton_w_in, precision_digits=prec),precision_digits=prec)
             cbm = ((self.carton_d_cm * self.carton_h_cm * self.carton_w_cm)/1000000)
             self.cbm = float_repr(float_round(cbm, precision_digits=prec),precision_digits=prec)
-            
         if float(group_cu_ft) > 0:
             cu_ft = (float(self.cbm) * float(group_cu_ft))
             self.cu_ft = float_repr(float_round(cu_ft, precision_digits=prec),precision_digits=prec)
+            
+    @api.onchange('item_w_cm', 'item_d_cm', 'item_h_cm')
+    def _onchange_item(self):
+        prec = self.env['decimal.precision'].precision_get('Product Price')
+        if float(self.item_w_cm)>0:
+            item_w_in = (float(self.item_w_cm) * float(0.393701))
+            self.item_w_in = float_repr(float_round(item_w_in, precision_digits=prec),precision_digits=prec)
+        if float(self.item_d_cm)>0:
+            item_d_in = (float(self.item_d_cm) * float(0.393701))
+            self.item_d_in = float_repr(float_round(item_d_in, precision_digits=prec),precision_digits=prec)
+        if float(self.item_h_cm)>0:
+            item_h_in = (float(self.item_h_cm) * float(0.393701))
+            self.item_h_in = float_repr(float_round(item_h_in, precision_digits=prec),precision_digits=prec)
         
     @api.onchange('cbm')
     def _onchange_cbm(self):
