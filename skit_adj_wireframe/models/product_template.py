@@ -114,15 +114,16 @@ class ProductTemplate(models.Model):
             
     @api.onchange('item_w_cm', 'item_d_cm', 'item_h_cm')
     def _onchange_item(self):
+        group_carton = self.env['ir.config_parameter'].sudo().get_param('skit_adj_wireframe.group_carton')
         prec = self.env['decimal.precision'].precision_get('Product Price')
-        if float(self.item_w_cm)>0:
-            item_w_in = (float(self.item_w_cm) * float(0.393701))
+        if float(self.item_w_cm)>0 and float(group_carton):
+            item_w_in = (float(self.item_w_cm) * float(group_carton))
             self.item_w_in = float_repr(float_round(item_w_in, precision_digits=prec),precision_digits=prec)
-        if float(self.item_d_cm)>0:
-            item_d_in = (float(self.item_d_cm) * float(0.393701))
+        if float(self.item_d_cm)>0 and float(group_carton):
+            item_d_in = (float(self.item_d_cm) * float(group_carton))
             self.item_d_in = float_repr(float_round(item_d_in, precision_digits=prec),precision_digits=prec)
-        if float(self.item_h_cm)>0:
-            item_h_in = (float(self.item_h_cm) * float(0.393701))
+        if float(self.item_h_cm)>0 and float(group_carton):
+            item_h_in = (float(self.item_h_cm) * float(group_carton))
             self.item_h_in = float_repr(float_round(item_h_in, precision_digits=prec),precision_digits=prec)
         
     @api.onchange('cbm')

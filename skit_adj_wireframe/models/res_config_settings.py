@@ -6,8 +6,8 @@ from odoo import fields, models,api
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
     
-    group_carton = fields.Float("Carton")
-    group_cu_ft = fields.Float("Cu FT")
+    group_carton = fields.Float("Carton",digits=(36, 6))
+    group_cu_ft = fields.Float("Cu FT",digits=(36, 6))
     
     @api.model
     def get_values(self):
