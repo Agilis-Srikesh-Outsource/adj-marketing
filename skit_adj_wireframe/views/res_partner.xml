@@ -70,10 +70,6 @@
 		   		<xpath expr="//field[@name='name']" position="before">
 			   		<field name="product_id"/>
 			   	</xpath>
-			   	<xpath expr="//field[@name='product_name']" position="replace">
-			   		<field name="nick_name"/>
-			   		<field name="vendor_item"/>
-			   	</xpath>
 			   	<xpath expr="//field[@name='product_code']" position="replace">
 			   		
 			   	</xpath>

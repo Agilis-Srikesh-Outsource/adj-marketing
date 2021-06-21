@@ -8,8 +8,6 @@
 		 	<xpath expr="//field[@name='barcode']" position="after">
 		 		
 		 		<br></br>
-            	<field name="factory_items"/>
-            	<field name="adj_items"/>
             	<field name="product_brand"/>
             	<field name="hts"/>
             	<field name="duty"/>
@@ -139,8 +137,6 @@
 		 	<xpath expr="//field[@name='categ_id']" position="after">
 		 		<field name="cu_ft"/>
 		 		<br></br>
-            	<field name="factory_items"/>
-            	<field name="adj_items"/>
             	<field name="product_brand"/>
             	<field name="hts"/>
             	<field name="duty"/>

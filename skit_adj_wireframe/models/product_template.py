@@ -55,7 +55,7 @@ class ProductTemplate(models.Model):
     carton_h_in = fields.Float("Carton H (in)",digits=dp.get_precision('Product Price'))
     cbm = fields.Float("CBM", help="Master Carton Cube",digits=dp.get_precision('Product Price'))
     gtin = fields.Char("GTIN")
-    remark = fields.Text(string='Remarks', help="Notes/Remark")
+    remark = fields.Text(string='Remarks',related='description_sale', help="Notes/Remark")
     product_brand = fields.Char("Brand", help="Brand used on Product")
     landed_cost = fields.Float("ELC",digits=dp.get_precision('Product Price'), help="Estimated Landed Cost")
     min_order_qty = fields.Char("MOQ", help="Minimum Order Quantity")
