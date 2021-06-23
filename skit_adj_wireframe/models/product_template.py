@@ -55,7 +55,7 @@ class ProductTemplate(models.Model):
     carton_h_in = fields.Float("Carton H (in)",digits=dp.get_precision('Product Price'))
     cbm = fields.Float("CBM", help="Master Carton Cube",digits=dp.get_precision('Product Price'))
     gtin = fields.Char("GTIN")
-    remark = fields.Text(string='Remarks',related='description_sale', help="Notes/Remark")
+    remark = fields.Text(string='Remarks', help="Notes/Remark")
     product_brand = fields.Char("Brand", help="Brand used on Product")
     landed_cost = fields.Float("ELC",digits=dp.get_precision('Product Price'), help="Estimated Landed Cost")
     min_order_qty = fields.Char("MOQ", help="Minimum Order Quantity")
@@ -93,6 +93,14 @@ class ProductTemplate(models.Model):
     freight_unit = fields.Float('Freight per unit',digits=dp.get_precision('Product Price'))
     layer = fields.Integer("Layer")
     pallet = fields.Integer("Pallet")
+    description_purchase = fields.Text(
+        'Purchase Description', translate=True,related='remark',
+        help="A description of the Product that you want to communicate to your vendors. "
+             "This description will be copied to every Purchase Order, Receipt and Vendor Bill/Credit Note.")
+    description_sale = fields.Text(
+        'Sale Description', translate=True,related='remark',
+        help="A description of the Product that you want to communicate to your customers. "
+             "This description will be copied to every Sales Order, Delivery Order and Customer Invoice/Credit Note")
     
     @api.onchange('carton_w_cm', 'carton_d_cm', 'carton_h_cm')
     def _onchange_carton(self):
