@@ -69,7 +69,7 @@ class SkitPurchaseOrder(models.Model):
 class skitPurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
 
-    upc_code = fields.Char(string='UPC Code')
+    upc_code = fields.Many2many('product.attr.color',string='Colors UPC/APN')
     cbm_per_case = fields.Char(string="CBM Per Case")
     case_pack = fields.Char(string="Case Pack")
 
@@ -78,8 +78,8 @@ class skitPurchaseOrderLine(models.Model):
         product = self.product_id
         super(skitPurchaseOrderLine, self).onchange_product_id()
         if product:
-            self.upc_code = product.barcode
             self.name = product.description
             self.cbm_per_case = product.cbm
             self.case_pack = product.case_pack
+            self.upc_code = [[6,0,product.product_attr_color_ids.ids]]
     

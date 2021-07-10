@@ -110,6 +110,7 @@ class SkitSaleOrderLine(models.Model):
 
     product_templ_id = fields.Many2one('product.template',
                                        related="product_id.product_tmpl_id")
+    upc_code_ids = fields.Many2many('product.attr.color',string='Colors UPC/APN')
 
     def change_unit_price(self, price_unit, product):
         products = self.env['product.product'].search([('id', '=', product)])

@@ -28,7 +28,7 @@
 				<field name="product_id" string="Retail Item Number"/>
 			</xpath>
 			<xpath expr="//field[@name='order_line']/tree//field[@name='name']" position="after">
-				<field name="upc_code"/>
+				<field name="upc_code" widget="many2many_tags"/>
 				<field name="cbm_per_case" />
 				<field name="case_pack" />
 			</xpath>

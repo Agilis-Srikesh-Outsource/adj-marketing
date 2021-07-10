@@ -31,7 +31,8 @@
         'views/date_config.xml',
         'views/date_config_demo.xml',
         'views/ship_via.xml',
-        'views/report_purchase_order.xml'
+        'views/report_purchase_order.xml',
+        'views/report_sale_order.xml'
     ],
 
     'installable': True,

@@ -7,3 +7,5 @@ access_skit_date_config_user,skit.date.config,model_skit_date_config,account.gro
 access_skit_date_config_manager,skit.date.config,model_skit_date_config,account.group_account_manager,1,1,1,1
 access_skit_ship_via_user,skit.ship.via,model_skit_ship_via,account.group_account_user,1,1,1,1
 access_skit_ship_via_manager,skit.ship.via,model_skit_ship_via,account.group_account_manager,1,1,1,1
+access_product_attr_color_user,product.attr.color,model_product_attr_color,account.group_account_user,1,1,1,1
+access_product_attr_color_manager,product.attr.color,model_product_attr_color,account.group_account_manager,1,1,1,1

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="adj_report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//table[1]//thead//tr//th[1]" position="after">
+        	<th>Colors UPC/APN</th>
+        </xpath>
+       <xpath expr="//tbody[@class='sale_tbody']//t[2]//tr/td[1]" position="after">
+			<td>
+	                <t t-set="count" t-value="1" />
+	                <t t-foreach="l.upc_code_ids" t-as="code">
+	                	<t t-if="count ==1">
+	                		<span t-field="code.attribute_id.name"/>:<span t-field="code.upc"/>
+	                	</t>
+	                	<t t-else="">
+	                		, <span t-field="code.attribute_id.name"/>:<span t-field="code.upc"/>
+	                	</t>
+	                	
+	                	<t t-set="count" t-value="count + 1" />
+	                </t>
+	         </td>
+        </xpath>
+    </template>
+</odoo>

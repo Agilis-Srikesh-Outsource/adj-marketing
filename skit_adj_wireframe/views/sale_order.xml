@@ -13,8 +13,6 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
             	<xpath expr="//field[@name='partner_id']" position="after">
-            		<field name="nick_name"/>
-	                <field name="customer_items"/>
 	                <field name="create_date" readonly="1" string="Date Created"/>
                 </xpath>
             	<xpath expr="//field[@name='payment_term_id']" position="after">
@@ -56,6 +54,9 @@
                                                 attrs="{'readonly': [('product_updatable', '=', False)]}"
                                                 force_save="1" string="Retail Item Number"
                                                />
+                </xpath>
+               	<xpath expr="//field[@name='order_line']/tree//field[@name='name']" position="after">
+                    <field name="upc_code_ids" widget="many2many_tags"/>
                 </xpath>
             </field>
    </record>

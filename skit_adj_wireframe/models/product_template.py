@@ -101,6 +101,7 @@ class ProductTemplate(models.Model):
         'Sale Description', translate=True,related='remark',
         help="A description of the Product that you want to communicate to your customers. "
              "This description will be copied to every Sales Order, Delivery Order and Customer Invoice/Credit Note")
+    product_attr_color_ids= fields.One2many('product.attr.color','product_id')
     
     @api.onchange('carton_w_cm', 'carton_d_cm', 'carton_h_cm')
     def _onchange_carton(self):
@@ -358,3 +359,17 @@ class ProductClassification(models.Model):
     _description = "Product Classification"
 
     name = fields.Char("Name")
+    
+class ProductAttributeColor(models.Model):
+    _name = 'product.attr.color'
+    _description = "Product Attribute Color"
+    _rec_name = 'attribute_id'
+    
+    attribute_id = fields.Many2one('product.attribute',"Attribute")
+    upc = fields.Char("UPC")
+    product_id = fields.Many2one('product.template',"Product")
+    
+    
+    @api.multi
+    def name_get(self):
+        return [(value.id, "%s: %s" % (value.attribute_id.name, value.upc)) for value in self]

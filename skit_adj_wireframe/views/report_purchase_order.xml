@@ -22,7 +22,7 @@
  				<th><strong>Item</strong></th>
         </xpath>
         <xpath expr="//div[@class='page']/table[1]//thead//tr//th[3]" position="replace">
- 				<th><strong>UPC</strong></th>
+ 				<th><strong>Colors UPC/APN</strong></th>
         </xpath>
         <xpath expr="//div[@class='page']/table[1]//thead//tr//th[4]" position="replace">
         </xpath>
@@ -33,8 +33,18 @@
         </xpath>
         <xpath expr="//div[@class='page']/table[1]//tbody//tr//td[3]" position="replace">
  				<td>
-                	<span t-field="line.upc_code"/>
-                </td>
+	                <t t-set="count" t-value="1" />
+	                <t t-foreach="line.upc_code" t-as="code">
+	                	<t t-if="count ==1">
+	                		<span t-field="code.attribute_id.name"/>:<span t-field="code.upc"/>
+	                	</t>
+	                	<t t-else="">
+	                		, <span t-field="code.attribute_id.name"/>:<span t-field="code.upc"/>
+	                	</t>
+	                	
+	                	<t t-set="count" t-value="count + 1" />
+	                </t>
+	         	</td>
         </xpath>
         <xpath expr="//div[@class='page']/table[1]//tbody//tr//td[4]" position="replace">
         </xpath>
