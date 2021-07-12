@@ -363,13 +363,14 @@ class ProductClassification(models.Model):
 class ProductAttributeColor(models.Model):
     _name = 'product.attr.color'
     _description = "Product Attribute Color"
-    _rec_name = 'attribute_id'
+    _rec_name = 'value_id'
     
     attribute_id = fields.Many2one('product.attribute',"Attribute")
+    value_id = fields.Many2one('product.attribute.value', string='Value')
     upc = fields.Char("UPC")
     product_id = fields.Many2one('product.template',"Product")
     
     
     @api.multi
     def name_get(self):
-        return [(value.id, "%s: %s" % (value.attribute_id.name, value.upc)) for value in self]
+        return [(value.id, "%s: %s" % (value.value_id.name, value.upc)) for value in self]

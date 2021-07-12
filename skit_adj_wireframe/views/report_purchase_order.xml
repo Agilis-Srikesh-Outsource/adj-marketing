@@ -36,10 +36,10 @@
 	                <t t-set="count" t-value="1" />
 	                <t t-foreach="line.upc_code" t-as="code">
 	                	<t t-if="count ==1">
-	                		<span t-field="code.attribute_id.name"/>:<span t-field="code.upc"/>
+	                		<span t-field="code.value_id.name"/>:<span t-field="code.upc"/>
 	                	</t>
 	                	<t t-else="">
-	                		, <span t-field="code.attribute_id.name"/>:<span t-field="code.upc"/>
+	                		, <span t-field="code.value_id.name"/>:<span t-field="code.upc"/>
 	                	</t>
 	                	
 	                	<t t-set="count" t-value="count + 1" />

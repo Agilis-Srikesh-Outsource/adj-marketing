@@ -131,11 +131,13 @@
            			<field name="product_attr_color_ids">
            				<tree>
 	         				<field name="attribute_id"/>
+	         				<field name="value_id"/>
 	         				<field name="upc"/>
         				</tree>
         				<form>
 	        				<group>
 		        				<field name="attribute_id"/>
+		        				<field name="value_id"/>
 		         				<field name="upc"/>
 	        				</group>
         				</form>
