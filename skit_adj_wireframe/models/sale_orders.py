@@ -127,6 +127,12 @@ class SkitSaleOrderLine(models.Model):
             else:
                 return True
             
+    @api.onchange('product_id')
+    def onchange_productid(self):
+        product = self.product_id
+        if product:
+            self.upc_code_ids = [[6,0,product.product_attr_color_ids.ids]]
+            
 class SaleReport(models.Model):
     _inherit = "sale.report"
 
