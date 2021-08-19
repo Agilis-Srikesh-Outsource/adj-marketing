@@ -32,7 +32,7 @@ class ProductTemplate(models.Model):
                                 ('discontinued', _('Discontinued')),
                                 ('quote', _('Quote'))], string='Status')
     qty_inner = fields.Integer("QTY Inner", help="Quantity in inner carton")
-    qty_master = fields.Integer("QTY Master",
+    qty_master = fields.Integer("QTY Carton",
                                 help="Quantity  in shipping carton")
     pdq = fields.Selection([
                             ('yes', _('Yes')),
@@ -102,7 +102,7 @@ class ProductTemplate(models.Model):
         help="A description of the Product that you want to communicate to your customers. "
              "This description will be copied to every Sales Order, Delivery Order and Customer Invoice/Credit Note")
     product_attr_color_ids= fields.One2many('product.attr.color','product_id')
-    
+
     @api.onchange('carton_w_cm', 'carton_d_cm', 'carton_h_cm')
     def _onchange_carton(self):
         group_carton = self.env['ir.config_parameter'].sudo().get_param('skit_adj_wireframe.group_carton')
@@ -120,7 +120,7 @@ class ProductTemplate(models.Model):
         if float(group_cu_ft) > 0:
             cu_ft = (float(self.cbm) * float(group_cu_ft))
             self.cu_ft = float_repr(float_round(cu_ft, precision_digits=prec),precision_digits=prec)
-            
+
     @api.onchange('item_w_cm', 'item_d_cm', 'item_h_cm')
     def _onchange_item(self):
         group_carton = self.env['ir.config_parameter'].sudo().get_param('skit_adj_wireframe.group_carton')
@@ -134,7 +134,7 @@ class ProductTemplate(models.Model):
         if float(self.item_h_cm)>0 and float(group_carton):
             item_h_in = (float(self.item_h_cm) * float(group_carton))
             self.item_h_in = float_repr(float_round(item_h_in, precision_digits=prec),precision_digits=prec)
-        
+
     @api.onchange('cbm')
     def _onchange_cbm(self):
         group_cu_ft = self.env['ir.config_parameter'].sudo().get_param('skit_adj_wireframe.group_cu_ft')
@@ -142,18 +142,18 @@ class ProductTemplate(models.Model):
         if float(group_cu_ft) > 0:
             cu_ft = (float(self.cbm) * float(group_cu_ft))
             self.cu_ft = float_repr(float_round(cu_ft, precision_digits=prec),precision_digits=prec)
-            
+
     @api.onchange('item_weight')
     def _onchange_weight(self):
         if self.item_weight > 0:
             self.item_weight_lbs = self.item_weight * 2.20462
-        
-        
+
+
     @api.onchange('carton_weight')
     def _onchange_cartonweight(self):
         if self.carton_weight > 0:
             self.carton_weight_lbs = self.carton_weight * 2.20462
-            
+
     @api.onchange('standard_price','sell_price')
     def onchange_standard_price(self):
         cost_price = self.standard_price
@@ -163,7 +163,7 @@ class ProductTemplate(models.Model):
             cost = (sell_price-cost_price)
             price = ((cost)/sell_price)
             self.gross_margin = float_repr(float_round(price, precision_digits=prec),precision_digits=prec)
-    
+
     @api.onchange('duty_cost','sell_price','freight_unit')
     def onchange_elc(self):
         sell_price = self.sell_price
@@ -172,7 +172,7 @@ class ProductTemplate(models.Model):
         prec = self.env['decimal.precision'].precision_get('Product Price')
         elc = (sell_price+duty_cost+freight_unit)
         self.landed_cost = float_repr(float_round(elc, precision_digits=prec),precision_digits=prec)
-            
+
     @api.onchange('cu_ft','freight_rate_cuft','qty_master')
     def onchange_freight(self):
         cu_ft = self.cu_ft
@@ -182,8 +182,8 @@ class ProductTemplate(models.Model):
         if cu_ft and freight_rate_cuft and qty_master:
             cuft = (cu_ft*freight_rate_cuft)
             freight_unit = ((cuft)/qty_master)
-            self.freight_unit = float_repr(float_round(freight_unit, precision_digits=prec),precision_digits=prec)      
-    
+            self.freight_unit = float_repr(float_round(freight_unit, precision_digits=prec),precision_digits=prec)
+
     @api.onchange('sell_price','duty')
     def onchange_duty(self):
         sell_price = self.sell_price
@@ -191,7 +191,7 @@ class ProductTemplate(models.Model):
         prec = self.env['decimal.precision'].precision_get('Product Price')
         if sell_price and duty:
             duty_cost = (sell_price*duty)
-            self.duty_cost = float_repr(float_round(duty_cost, precision_digits=prec),precision_digits=prec)      
+            self.duty_cost = float_repr(float_round(duty_cost, precision_digits=prec),precision_digits=prec)
 
     @api.onchange('sell_price')
     def onchange_sellprice(self):
@@ -281,11 +281,11 @@ class SkitProductProduct(models.Model):
             self.carton_w_in = float_repr(float_round(carton_w_in, precision_digits=prec),precision_digits=prec)
             cbm = ((self.carton_d_cm * self.carton_h_cm * self.carton_w_cm)/1000000)
             self.cbm = float_repr(float_round(cbm, precision_digits=prec),precision_digits=prec)
-            
+
         if group_cu_ft > 0:
             cu_ft = (float(self.cbm) * float(group_cu_ft))
             self.cu_ft = float_repr(float_round(cu_ft, precision_digits=prec),precision_digits=prec)
-        
+
     @api.onchange('sell_price')
     def onchange_sellprice(self):
         cost_price = self.standard_price
@@ -359,18 +359,18 @@ class ProductClassification(models.Model):
     _description = "Product Classification"
 
     name = fields.Char("Name")
-    
+
 class ProductAttributeColor(models.Model):
     _name = 'product.attr.color'
     _description = "Product Attribute Color"
     _rec_name = 'value_id'
-    
+
     attribute_id = fields.Many2one('product.attribute',"Attribute")
     value_id = fields.Many2one('product.attribute.value', string='Value')
     upc = fields.Char("UPC")
     product_id = fields.Many2one('product.template',"Product")
-    
-    
+
+
     @api.multi
     def name_get(self):
         return [(value.id, "%s: %s" % (value.value_id.name, value.upc)) for value in self]

@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime, timedelta
+from logging import getLogger
 from odoo import fields, models, api,  _
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
-from datetime import datetime
+
+
+def log(*to_output):
+    getLogger().info('\n\n\n%s\n\n', to_output)
 
 
 class SkitPurchaseOrder(models.Model):
@@ -35,7 +40,21 @@ class SkitPurchaseOrder(models.Model):
     ttl_carton = fields.Char(string="TTl Cartons", help="Carton Quantity")
     fcr_confirm = fields.Char(string="FCR Confirmed")
     sail_window_end = fields.Char(string="Sail Window End")
-    book_by = fields.Date(string="Book By")
+
+    book_by = fields.Date(string="Book By", compute="_compute_dates")
+
+    @api.depends('lsd')
+    def _compute_dates(self):
+        config = self.env['skit.date.config'].search([])
+
+        if config:
+            config = config[0]
+
+            for rec in self:
+                if rec.lsd:
+                    rec.book_by = (datetime.strptime(rec.lsd, "%Y-%m-%d")
+                                   - timedelta(days=config.book_by_date))
+
     inspection_by = fields.Date(string="Inspection By")
     actual_inspection_date = fields.Date(string="Actual Inspection Date")
     sa_release = fields.Char(string="SA Release")
@@ -54,7 +73,7 @@ class SkitPurchaseOrder(models.Model):
     total_cbm = fields.Char("Total CBM")
     description = fields.Text("Description")
     ship_via = fields.Many2one('skit.ship.via', "Ship Via")
-    
+
     @api.onchange('partner_id')
     def _onchange_partner(self):
         partner = self.partner_id
@@ -69,9 +88,27 @@ class SkitPurchaseOrder(models.Model):
 class skitPurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
 
-    upc_code = fields.Many2many('product.attr.color',string='Colors UPC/APN')
-    cbm_per_case = fields.Char(string="CBM Per Case")
+    upc_code = fields.Many2many('product.attr.color',string='Colors UPC')
+    cbm_per_case = fields.Char(string="CBM Per Carton")
     case_pack = fields.Char(string="Case Pack")
+    qty_carton = fields.Integer(related="product_id.qty_master")
+    ttl_carton = fields.Float(string="TTL Carton",
+                              compute="_compute_ttl_carton",
+                              digits=(12, 4))
+    ttl_cbm = fields.Float(string="TTL CBM",
+                           compute="_compute_ttl_cbm",
+                           digits=(12, 4))
+
+    @api.depends('ttl_carton')
+    def _compute_ttl_cbm(self):
+        for rec in self:
+            rec.ttl_cbm = rec.ttl_carton * float(rec.cbm_per_case)
+
+    @api.depends('qty_carton', 'product_qty')
+    def _compute_ttl_carton(self):
+        for rec in self:
+            rec.ttl_carton = (float(rec.product_qty)
+                              / rec.qty_carton if rec.qty_carton else 0)
 
     @api.onchange('product_id')
     def onchange_product_id(self):
@@ -82,4 +119,3 @@ class skitPurchaseOrderLine(models.Model):
             self.cbm_per_case = product.cbm
             self.case_pack = product.case_pack
             self.upc_code = [[6,0,product.product_attr_color_ids.ids]]
-    

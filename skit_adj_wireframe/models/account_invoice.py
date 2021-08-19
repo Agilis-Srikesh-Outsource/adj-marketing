@@ -5,7 +5,7 @@ from odoo import fields, models,_
 
 class SkitAccountInvoice(models.Model):
     _inherit = 'account.invoice'
-    
+
     nick_name = fields.Char("Nick Name")
     page = fields.Char(string="Page")
     ship_to = fields.Char(string="Ship To")
@@ -28,10 +28,10 @@ class SkitAccountInvoice(models.Model):
     local_charge  = fields.Char("Local Charges")
     remark = fields.Text(string='Remarks',help="Notes/Remark")
     shipping_port = fields.Char("Port",help="Shipping Port")
-    retail_item = fields.Char("Retail Item #",help="Customer Item #")
+    retail_item = fields.Char("Item Number",help="Customer Item #")
     delivery_date =fields.Date(string="Delivery Date", help="CRD/Delivery Date")
     order_total = fields.Float("Order total $",help="Total  value of Purchase order")
-    adj_po  = fields.Char("ADJ PO #") 
+    adj_po  = fields.Char("ADJ PO #")
     custom = fields.Char("Customs")
     package_cost = fields.Float("Packaging Costs")
     deposit = fields.Float("Deposit $")
@@ -50,7 +50,7 @@ class SkitAccountInvoice(models.Model):
     total_cross_weight = fields.Float("Total Gross Weight")
     unit_price = fields.Float("Unit Price")
     factory = fields.Char("Factory")
-    
+
 class SkitAccountInvoiceLine(models.Model):
     _inherit = "account.invoice.line"
 
@@ -77,5 +77,3 @@ class AccountInvoiceReport(models.Model):
 
     def _from(self):
         return super(AccountInvoiceReport, self)._from() + " LEFT JOIN ir_property ip ON (ip.name='standard_price' AND ip.res_id=CONCAT('product.product,',pr.id) AND ip.company_id=ai.company_id)"
-
- 
