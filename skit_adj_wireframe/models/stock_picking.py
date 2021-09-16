@@ -11,6 +11,7 @@ from odoo.addons import decimal_precision as dp
 class Picking(models.Model):
     _inherit = "stock.picking"
 
+    customer_order_no = fields.Char('Customer Order No.')
     delivery_date = fields.Date('Delivery Date',
                                 copy=False,
                                 index=True, readonly=False, store=True,
@@ -46,8 +47,8 @@ class Picking(models.Model):
     cu_ft = fields.Float(string="CU Ft", help="Master Carton CU FT",digits=dp.get_precision('Product Price'))
     factory = fields.Char(string="Factory")
     fcr_no  = fields.Char("FCR")
-    
-    adj_po  = fields.Char("ADJ PO ") 
+
+    adj_po  = fields.Char("ADJ PO ")
     so_number = fields.Char("SO #")
     wic_number = fields.Char("WIC #")
     item_description = fields.Char("Item Description")
@@ -60,7 +61,7 @@ class Picking(models.Model):
     shipping_window_end = fields.Date(string="Shipping Window End")
     port = fields.Char("Port", help="Shipping Port")
     remark = fields.Text(string='Remarks',help="Notes/Remark")
-    
+
 
 #     @api.depends('sale_id.confirmation_date')
 #     @api.one
@@ -76,7 +77,7 @@ class Picking(models.Model):
 #                 for line in self.sale_id.order_line:
 #                     product_tmpl_ids.append(line.product_id.product_tmpl_id.id)
 #                     sale_lead.append(line.id)
-#                 sale_line = self.env['sale.order.line'].sudo().search([('id', 'in', sale_lead), ('customer_lead', '!=', False)], 
+#                 sale_line = self.env['sale.order.line'].sudo().search([('id', 'in', sale_lead), ('customer_lead', '!=', False)],
 #                                                                       order='customer_lead DESC', limit=1)
 #                 product_tmpl = self.env['product.template'].sudo().search([
 #                     ('id', 'in', product_tmpl_ids), ('lead_time', '!=', False)], order='lead_time DESC',
@@ -143,7 +144,7 @@ class Picking(models.Model):
                     if mline.product_id.description_purchase:
                         name += '\n' + mline.product_id.description_purchase
                     qty = mline.product_uom_qty - mline.reserved_availability
-                    current_date = datetime.strptime(fields.Date.today(), DEFAULT_SERVER_DATE_FORMAT) 
+                    current_date = datetime.strptime(fields.Date.today(), DEFAULT_SERVER_DATE_FORMAT)
                     request_line.create({'product_id': mline.product_id.id,
                                          'product_qty': qty,
                                          'name': name,
@@ -202,7 +203,7 @@ class Picking(models.Model):
         cubic_feet = (carton_cm / 28316.846592)
         cubicfeet = float_repr(float_round(cubic_feet, precision_digits=prec),precision_digits=prec)
         self.update({'cu_ft': cubicfeet})
-    
+
     @api.onchange('lsd')
     def _onchange_lsd_date(self):
         date_config = self.env['skit.date.config'].search([],limit=1)
@@ -221,5 +222,3 @@ class Picking(models.Model):
             self.sample_collection = lsd - timedelta(days=date_config.sample_collection)
             self.sample_selling = lsd - timedelta(days=date_config.sample_selling)
             self.po_date_receipt = lsd - timedelta(days=date_config.po_date_receipt)
-        
-        

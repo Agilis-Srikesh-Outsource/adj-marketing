@@ -23,7 +23,7 @@ class ProductTemplate(models.Model):
     adj_items = fields.Char(string="ADJ Retail Number")
     retail_items = fields.Char(string="Retail Number #")
     hts = fields.Char(string="HTS #", help="Import Code")
-    duty = fields.Float('Duty %')
+    duty = fields.Float('Duty %', digits=(12, 3))
     import_val = fields.Selection([
                                 ('yes', _('Yes')),
                                 ('no', _('No'))], string='Import')
@@ -63,7 +63,7 @@ class ProductTemplate(models.Model):
     port = fields.Char("Port", help="Shipping Port")
     commission = fields.Float("Commision %", help="Sales Commision",
                               default=0.0)
-    gross_margin = fields.Float("Gross Margin%")
+    gross_margin = fields.Float("Gross Margin%", digits=(12, 3))
     safty_test = fields.Date("Pre Production Safety Test")
     gmi = fields.Char("GMI")
     sample_sealing = fields.Date(string="Sample Sealing")
@@ -87,7 +87,7 @@ class ProductTemplate(models.Model):
         help="Compute price based on Cost and Gross Margin values")
     case_pack = fields.Float("Case Pack")
     material_const_finish = fields.Text("Material Construction Finish")
-    packaging_id = fields.Many2one('product.packaging',"Packaging")
+    packaging_id = fields.Text("Packaging")
     duty_cost = fields.Float('Duty Cost $',digits=dp.get_precision('Product Price'))
     freight_rate_cuft = fields.Float('Freight rate per Cu.ft',digits=dp.get_precision('Product Price'))
     freight_unit = fields.Float('Freight per unit',digits=dp.get_precision('Product Price'))

@@ -18,6 +18,8 @@ class SkitError(models.Model):
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    client_order_ref = fields.Char(string='Customer Order Number',
+                                   copy=False)
     nick_name = fields.Char(string="Nick Name")
     customer_items = fields.Char(string="Customer Item #")
     contract_no = fields.Char(string="Contract No.")
@@ -45,7 +47,7 @@ class SaleOrder(models.Model):
     sale_duty = fields.Char("Duty$")
     freight_cuft = fields.Float("Freight per Cu Ft", default="3")
     sa_frieght = fields.Datetime("SA Frieght")
-    cfs_cut_off = fields.Date("CFS Cut off")
+    cfs_cut_off = fields.Date("CFS/CY Cutoff")
     in_pl = fields.Char("In & PL")
 
     @api.multi
@@ -70,11 +72,14 @@ class SaleOrder(models.Model):
             cubic_feet = (carton_cm / 28316.846592)
             cubicfeet = float_repr(float_round(cubic_feet, precision_digits=prec),precision_digits=prec)
             tot_weight = float_repr(float_round(weight, precision_digits=prec),precision_digits=prec)
-            picking.update({'carton_w_cm': w_cm,
-                            'carton_d_cm': d_cm,
-                            'carton_h_cm': h_cm,
-                            'cu_ft': cubicfeet,
-                            'weight': tot_weight})
+            picking.update({
+                'customer_order_no': self.client_order_ref,
+                'carton_w_cm': w_cm,
+                'carton_d_cm': d_cm,
+                'carton_h_cm': h_cm,
+                'cu_ft': cubicfeet,
+                'weight': tot_weight
+            })
             # if(not availabiltity):
                 # picking.delivery_date = current_date
                 # picking.so_release_target = current_date
@@ -90,7 +95,7 @@ class SaleOrder(models.Model):
                 # picking.po_good_through = current_date + timedelta(days=9)
                 # picking.start_ship_window = current_date + timedelta(days=14)
                 # picking.lsd = current_date + timedelta(days=28)
-                
+
     @api.model
     def create(self, vals):
         order = super(SaleOrder, self).create(vals)
@@ -98,11 +103,11 @@ class SaleOrder(models.Model):
         order.ship_not_later = current_date
         order.cfs_cut_off = current_date - timedelta(days=19)
         return order
-    
+
     @api.onchange('ship_not_later')
     def _onchange_ship_not_later(self):
         if self.ship_not_later:
-            ship_not_later = fields.Date.from_string(self.ship_not_later) 
+            ship_not_later = fields.Date.from_string(self.ship_not_later)
             self.cfs_cut_off = ship_not_later - timedelta(days=19)
 
 class SkitSaleOrderLine(models.Model):
@@ -126,13 +131,13 @@ class SkitSaleOrderLine(models.Model):
                 return False
             else:
                 return True
-            
+
     @api.onchange('product_id')
     def onchange_productid(self):
         product = self.product_id
         if product:
             self.upc_code_ids = [[6,0,product.product_attr_color_ids.ids]]
-            
+
 class SaleReport(models.Model):
     _inherit = "sale.report"
 
@@ -140,7 +145,7 @@ class SaleReport(models.Model):
     client_order_ref = fields.Char(string='Customer PO', copy=False)
     fcr_no = fields.Char("FCR #")
     etd = fields.Char("ETD")
-    adj_po  = fields.Char("ADJ PO") 
+    adj_po  = fields.Char("ADJ PO")
     description_sale = fields.Char("Item Description")
     remark = fields.Char(string='Remarks', help="Notes/Remark")
     deadline_book = fields.Date("Deadline Booked")
@@ -160,7 +165,7 @@ class SaleReport(models.Model):
                                                     sp.actual_booked_date as actual_booked_date,sp.received_date as received_date,sp.cargo_received_date as cargo_received_date,\
                                                     sp.actual_etd,po.crd as crd,po.name as wpa_name,((select sum(product_qty) from purchase_order_line where order_id = po.id ) - (select sum(qty_received) from purchase_order_line where order_id = po.id )) as qtyopen,\
                                                     s.sa_frieght as sa_frieght,s.cfs_cut_off as cfs_cut_off,s.in_pl as in_pl"
-    
+
     def _from(self):
         return super(SaleReport, self)._from() + "left join account_invoice ai on (ai.origin = s.name)\
                                                 left join stock_picking sp on (sp.origin = s.name)\

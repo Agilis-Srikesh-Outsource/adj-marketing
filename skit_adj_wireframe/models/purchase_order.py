@@ -35,13 +35,52 @@ class SkitPurchaseOrder(models.Model):
                                 ('open', _('Open')),
                                 ('closed', _('Closed'))], string='Sale Order State')
     sale_order_date = fields.Date(string="Sale Order Date")
-    start_ship_window = fields.Date(string="Start of Ship Window")
+    start_ship_window = fields.Date(string="Start of Ship Window",
+                                    compute="_compute_dates")
     lsd = fields.Date(string="LSD", help="Sail by date / last ship date")
     ttl_carton = fields.Char(string="TTl Cartons", help="Carton Quantity")
     fcr_confirm = fields.Char(string="FCR Confirmed")
     sail_window_end = fields.Char(string="Sail Window End")
-
     book_by = fields.Date(string="Book By", compute="_compute_dates")
+
+    @api.multi
+    def _create_picking(self):
+        StockPicking = self.env['stock.picking']
+        for order in self:
+            if any([ptype in ['product', 'consu'] for ptype in order.order_line.mapped('product_id.type')]):
+                pickings = order.picking_ids.filtered(lambda x: x.state not in ('done','cancel'))
+                if not pickings:
+                    res = order._prepare_picking()
+
+                    res['lsd'] = datetime.strptime(order.lsd,
+                                                   "%Y-%m-%d")
+                    res['po_good_through'] = datetime.strptime(order.po_good_through,
+                                                               "%Y-%m-%d")
+                    res['start_ship_window'] = datetime.strptime(order.start_ship_window,
+                                                                 "%Y-%m-%d")
+                    res['book_by_date'] = datetime.strptime(order.book_by,
+                                                            "%Y-%m-%d")
+                    res['inspection_date'] = datetime.strptime(order.inspection_by,
+                                                               "%Y-%m-%d")
+                    res['sa_release_target'] = datetime.strptime(order.sa_release,
+                                                                 "%Y-%m-%d")
+                    res['so_release_target'] = datetime.strptime(order.so_release,
+                                                                 "%Y-%m-%d")
+
+                    picking = StockPicking.create(res)
+                else:
+                    picking = pickings[0]
+                moves = order.order_line._create_stock_moves(picking)
+                moves = moves.filtered(lambda x: x.state not in ('done', 'cancel'))._action_confirm()
+                seq = 0
+                for move in sorted(moves, key=lambda move: move.date_expected):
+                    seq += 5
+                    move.sequence = seq
+                moves._action_assign()
+                picking.message_post_with_view('mail.message_origin_link',
+                    values={'self': picking, 'origin': order},
+                    subtype_id=self.env.ref('mail.mt_note').id)
+        return True
 
     @api.depends('lsd')
     def _compute_dates(self):
@@ -52,20 +91,38 @@ class SkitPurchaseOrder(models.Model):
 
             for rec in self:
                 if rec.lsd:
-                    rec.book_by = (datetime.strptime(rec.lsd, "%Y-%m-%d")
-                                   - timedelta(days=config.book_by_date))
+                    date_format = datetime.strptime(rec.lsd, "%Y-%m-%d")
 
-    inspection_by = fields.Date(string="Inspection By")
+                    if config.book_by_date:
+                        rec.book_by = (date_format
+                                       - timedelta(days=config.book_by_date))
+                    if config.inspection_date:
+                        rec.inspection_by = (date_format
+                                             - timedelta(days=config.inspection_date))
+                    if config.sa_release_target:
+                        rec.sa_release = (date_format
+                                          - timedelta(days=config.sa_release_target))
+                    if config.so_release_target:
+                        rec.so_release = (date_format
+                                          - timedelta(days=config.so_release_target))
+                    if config.start_ship_window:
+                        rec.start_ship_window = (date_format
+                                                 - timedelta(days=config.start_ship_window))
+                    rec.crd = (date_format
+                               - timedelta(days=19))
+
+    inspection_by = fields.Date(string="Inspection By", compute="_compute_dates")
     actual_inspection_date = fields.Date(string="Actual Inspection Date")
-    sa_release = fields.Char(string="SA Release")
-    so_release = fields.Char(string="SO Release")
+    sa_release = fields.Date(string="SA Release", compute="_compute_dates")
+    so_release = fields.Date(string="SO Release", compute="_compute_dates")
     el_received = fields.Date(string="EI Received ")
     distribution_center = fields.Char(string="Distribution Center")
-    acutal_booking = fields.Char(string="Acutal Booking")
+    acutal_booking = fields.Char(string="Actual Booking")
     booking_number = fields.Char(string="Booking Number")
     begin_deliver_window = fields.Char(string="Begin of Deliver Window")
     freight_avail = fields.Char(string="Freight Avail")
-    crd = fields.Char(string="CRD", help="CRD/DELIVERY DATE")
+    crd = fields.Date(string="CRD", help="CRD/DELIVERY DATE",
+                      compute="_compute_dates")
     sail_window_start = fields.Char(string="Sail Window Start")
     remark = fields.Text(string='Remarks', help="Notes/Remark")
     master_carton_total = fields.Char(string="Master Carton Total",

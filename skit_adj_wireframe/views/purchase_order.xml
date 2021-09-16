@@ -55,39 +55,24 @@
         <page string="Other information">
           <group>
             <group>
+              <field name="lsd"/>
               <field name="po_good_through"/>
-              <field name="sample_sealing"/>
-              <field name="sample_sealing_approval"/>
-              <field name="dupro_date"/>
-              <field name="pac_test_expiry"/>
-              <br></br>
-              <field name="qaa_expiry"/>
-              <field name="so_number"/>
               <field name="sale_order_state"/>
               <field name="sale_order_date"/>
-              <br></br>
               <field name="start_ship_window"/>
-              <field name="lsd"/>
-              <field name="ttl_carton"/>
-              <field name="fcr_confirm"/>
-              <field name="sail_window_end"/>
             </group>
             <group>
               <field name="book_by"/>
               <field name="inspection_by"/>
               <field name="actual_inspection_date"/>
+              <field name="crd"/>
               <field name="sa_release"/>
               <field name="so_release"/>
-              <br></br>
               <field name="el_received"/>
               <field name="distribution_center"/>
               <field name="acutal_booking"/>
               <field name="booking_number"/>
-              <br></br>
-              <field name="begin_deliver_window"/>
-              <field name="freight_avail"/>
-              <field name="crd"/>
-              <field name="sail_window_start"/>
+              <field name="fcr_confirm"/>
               <field name="master_carton_total"/>
               <field name="total_cbm"/>
             </group>
