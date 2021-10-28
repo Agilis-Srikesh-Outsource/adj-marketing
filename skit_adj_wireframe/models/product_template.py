@@ -9,6 +9,17 @@ from odoo.exceptions import UserError
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
+    werks = fields.Char()
+    case_pack_cost = fields.Float('Case Pack Cost',
+                                  compute='_compute_case_pack_cost',
+                                  store=True)
+
+    @api.depends('qty_master', 'sell_price')
+    def _compute_case_pack_cost(self):
+        for rec in self:
+            if rec.sell_price and rec.qty_master:
+                rec.case_pack_cost = rec.qty_master * rec.sell_price
+
     cu_ft = fields.Float(string="CU FT", help="Master Carton CU FT",
                          digits=dp.get_precision('Product Price'))
    # buy_price = fields.Float('Buy Price',

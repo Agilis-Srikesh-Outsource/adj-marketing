@@ -43,7 +43,7 @@
       <xpath
           expr="//field[@name='order_line']/tree//field[@name='date_planned']"
           position="after">
-        <field name="cbm_per_case" />
+        <field name="cbm_per_case" readonly="1" force_save="1"/>
         <field name="qty_carton" />
         <field name="ttl_carton" />
         <field name="ttl_cbm" />

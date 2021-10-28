@@ -24,7 +24,8 @@ class SkitPurchaseOrder(models.Model):
                                  ondelete='restrict')
     contact_name = fields.Char('Vendor Contact Name')
     contact_email = fields.Char('Vendor Contact Email')
-    po_good_through = fields.Date(string="PO Good Through")
+    po_good_through = fields.Date(string="PO Good Through",
+                                  compute="_compute_dates")
     sample_sealing = fields.Date(string="Sample Sealing")
     sample_sealing_approval = fields.Date(string="Sample Sealing Approval")
     dupro_date = fields.Date(string="Dupro Date")
@@ -43,6 +44,20 @@ class SkitPurchaseOrder(models.Model):
     sail_window_end = fields.Char(string="Sail Window End")
     book_by = fields.Date(string="Book By", compute="_compute_dates")
 
+    READONLY_STATES = {
+        'purchase': [('readonly', True)],
+        'done': [('readonly', True)],
+        'cancel': [('readonly', True)],
+    }
+
+    def _default_picking_type(self):
+        return 6
+
+    picking_type_id = fields.Many2one('stock.picking.type', 'Deliver To',
+                                      states=READONLY_STATES, required=True,
+                                      default=_default_picking_type,
+                                      help="This will determine operation type of incoming shipment")
+
     @api.multi
     def _create_picking(self):
         StockPicking = self.env['stock.picking']
@@ -52,20 +67,27 @@ class SkitPurchaseOrder(models.Model):
                 if not pickings:
                     res = order._prepare_picking()
 
-                    res['lsd'] = datetime.strptime(order.lsd,
-                                                   "%Y-%m-%d")
-                    res['po_good_through'] = datetime.strptime(order.po_good_through,
-                                                               "%Y-%m-%d")
-                    res['start_ship_window'] = datetime.strptime(order.start_ship_window,
-                                                                 "%Y-%m-%d")
-                    res['book_by_date'] = datetime.strptime(order.book_by,
-                                                            "%Y-%m-%d")
-                    res['inspection_date'] = datetime.strptime(order.inspection_by,
-                                                               "%Y-%m-%d")
-                    res['sa_release_target'] = datetime.strptime(order.sa_release,
-                                                                 "%Y-%m-%d")
-                    res['so_release_target'] = datetime.strptime(order.so_release,
-                                                                 "%Y-%m-%d")
+                    if order.lsd:
+                        res['lsd'] = datetime.strptime(order.lsd,
+                                                       "%Y-%m-%d")
+                    if order.po_good_through:
+                        res['po_good_through'] = datetime.strptime(order.po_good_through,
+                                                                   "%Y-%m-%d")
+                    if order.start_ship_window:
+                        res['start_ship_window'] = datetime.strptime(order.start_ship_window,
+                                                                     "%Y-%m-%d")
+                    if order.book_by:
+                        res['book_by_date'] = datetime.strptime(order.book_by,
+                                                                "%Y-%m-%d")
+                    if order.inspection_by:
+                        res['inspection_date'] = datetime.strptime(order.inspection_by,
+                                                                   "%Y-%m-%d")
+                    if order.sa_release:
+                        res['sa_release_target'] = datetime.strptime(order.sa_release,
+                                                                     "%Y-%m-%d")
+                    if order.so_release:
+                        res['so_release_target'] = datetime.strptime(order.so_release,
+                                                                     "%Y-%m-%d")
 
                     picking = StockPicking.create(res)
                 else:
@@ -89,27 +111,27 @@ class SkitPurchaseOrder(models.Model):
         if config:
             config = config[0]
 
-            for rec in self:
-                if rec.lsd:
-                    date_format = datetime.strptime(rec.lsd, "%Y-%m-%d")
+        for rec in self:
+            if rec.lsd:
+                date_format = datetime.strptime(rec.lsd, "%Y-%m-%d")
 
-                    if config.book_by_date:
-                        rec.book_by = (date_format
-                                       - timedelta(days=config.book_by_date))
-                    if config.inspection_date:
-                        rec.inspection_by = (date_format
-                                             - timedelta(days=config.inspection_date))
-                    if config.sa_release_target:
-                        rec.sa_release = (date_format
-                                          - timedelta(days=config.sa_release_target))
-                    if config.so_release_target:
-                        rec.so_release = (date_format
-                                          - timedelta(days=config.so_release_target))
-                    if config.start_ship_window:
-                        rec.start_ship_window = (date_format
-                                                 - timedelta(days=config.start_ship_window))
-                    rec.crd = (date_format
-                               - timedelta(days=19))
+                if config and config.book_by_date:
+                    rec.book_by = (date_format
+                                   - timedelta(days=config.book_by_date))
+                if config and config.inspection_date:
+                    rec.inspection_by = (date_format
+                                         - timedelta(days=config.inspection_date))
+                if config and config.sa_release_target:
+                    rec.sa_release = (date_format
+                                      - timedelta(days=config.sa_release_target))
+                if config and config.so_release_target:
+                    rec.so_release = (date_format
+                                      - timedelta(days=config.so_release_target))
+                if config and config.start_ship_window:
+                    rec.start_ship_window = (date_format
+                                             - timedelta(days=config.start_ship_window))
+                rec.crd = date_format - timedelta(days=19)
+                rec.po_good_through = date_format - timedelta(days=19)
 
     inspection_by = fields.Date(string="Inspection By", compute="_compute_dates")
     actual_inspection_date = fields.Date(string="Actual Inspection Date")
@@ -173,6 +195,6 @@ class skitPurchaseOrderLine(models.Model):
         super(skitPurchaseOrderLine, self).onchange_product_id()
         if product:
             self.name = product.description
-            self.cbm_per_case = product.cbm
+            self.cbm_per_case = '{:.4f}'.format(float(product.cbm))
             self.case_pack = product.case_pack
             self.upc_code = [[6,0,product.product_attr_color_ids.ids]]
